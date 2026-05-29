@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { Menu, Search, Bell, LogOut } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { AdminSearchModal } from "@/components/admin/search-modal";
@@ -12,6 +13,7 @@ interface AdminTopbarProps {
 }
 
 export function AdminTopbar({ title, subtitle }: AdminTopbarProps) {
+  const router = useRouter();
   const [searchOpen, setSearchOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
   const [hasUnread, setHasUnread] = useState(false);
@@ -113,7 +115,7 @@ export function AdminTopbar({ title, subtitle }: AdminTopbarProps) {
             {dropdownOpen && (
               <div className="absolute right-0 top-full mt-1.5 w-44 bg-white rounded-xl border border-slate-200 shadow-lg py-1 z-50">
                 <button
-                  onClick={() => { setDropdownOpen(false); signOut({ callbackUrl: "/login" }); }}
+                  onClick={async () => { setDropdownOpen(false); await signOut({ redirect: false }); router.push("/login"); }}
                   className="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors"
                 >
                   <LogOut className="h-3.5 w-3.5" />

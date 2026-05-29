@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Bell, Search, Menu, User, Shield, BadgeCheck, LogOut } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -39,6 +39,7 @@ interface TopbarUser {
 
 export function DashboardTopbar({ user }: { user: TopbarUser }) {
   const pathname = usePathname();
+  const router = useRouter();
   const title = pageTitles[pathname] ?? "Dashboard";
   const [searchOpen, setSearchOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
@@ -162,7 +163,7 @@ export function DashboardTopbar({ user }: { user: TopbarUser }) {
               </div>
               <div className="border-t border-slate-100 py-1">
                 <button
-                  onClick={() => signOut({ callbackUrl: "/login" })}
+                  onClick={async () => { await signOut({ redirect: false }); router.push("/login"); }}
                   className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors"
                 >
                   <LogOut className="h-4 w-4" /> Sign Out

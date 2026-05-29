@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/lib/utils";
@@ -54,6 +54,7 @@ const navItems: NavItem[] = [
 
 export function DashboardSidebar({ user }: { user: SidebarUser }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
@@ -130,7 +131,7 @@ export function DashboardSidebar({ user }: { user: SidebarUser }) {
       {/* Sign out */}
       <div className="px-3 pb-4 border-t border-white/8 pt-3">
         <button
-          onClick={() => signOut({ callbackUrl: "/login" })}
+          onClick={async () => { await signOut({ redirect: false }); router.push("/login"); }}
           className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-white/50 hover:bg-white/6 hover:text-red-400 transition-all"
         >
           <LogOut className="h-4 w-4" />

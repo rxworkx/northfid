@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { cn } from "@/lib/utils";
 import {
@@ -64,6 +64,7 @@ const nav: NavSection[] = [
 
 function NavContent({ onClose }: { onClose?: () => void }) {
   const pathname = usePathname();
+  const router = useRouter();
 
   return (
     <div className="flex h-full flex-col bg-white border-r border-slate-200">
@@ -122,7 +123,7 @@ function NavContent({ onClose }: { onClose?: () => void }) {
           <span className="text-xs text-slate-400">Admin session active</span>
         </div>
         <button
-          onClick={() => signOut({ callbackUrl: "/login" })}
+          onClick={async () => { await signOut({ redirect: false }); router.push("/login"); }}
           className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-slate-500 hover:text-red-600 hover:bg-red-50 transition-all"
         >
           <LogOut className="h-4 w-4" />
