@@ -13,7 +13,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
     where: { id: session.user.id },
     select: {
       id: true, firstName: true, lastName: true, username: true,
-      email: true, emailVerified: true, isCopyTrader: true,
+      email: true, emailVerified: true, isCopyTrader: true, image: true,
       wallet: { select: { balance: true } },
       kyc: { select: { status: true } },
     },
@@ -21,17 +21,10 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   if (!user) redirect("/login");
 
-  const imageRow = await db.$queryRawUnsafe<Array<{ image: string | null }>>(
-    `SELECT image FROM users WHERE id = ?`,
-    session.user.id
-  );
-
-  const u = user as unknown as { wallet: { balance: number } | null; kyc: { status: string } | null };
   const flatUser = {
     ...user,
-    image: imageRow[0]?.image ?? "",
-    walletBalance: u.wallet?.balance ?? 0,
-    kycStatus: u.kyc?.status ?? "none",
+    walletBalance: user.wallet?.balance ?? 0,
+    kycStatus: user.kyc?.status ?? "none",
   };
 
   return (

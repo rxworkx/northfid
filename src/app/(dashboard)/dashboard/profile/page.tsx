@@ -15,19 +15,14 @@ export default async function ProfilePage() {
     select: {
       id: true, username: true, firstName: true, lastName: true,
       email: true, phone: true, country: true, gender: true,
-      emailVerified: true,
+      emailVerified: true, image: true,
       kyc: { select: { status: true } },
     },
   });
   if (!user) return null;
 
-  const imageRow = await db.$queryRawUnsafe<Array<{ image: string | null }>>(
-    `SELECT image FROM users WHERE id = ?`,
-    user.id
-  );
-  const image = imageRow[0]?.image ?? "";
-
-  const kycStatus = (user as any)?.kyc?.status ?? "none";
+  const image = user.image ?? "";
+  const kycStatus = user.kyc?.status ?? "none";
 
   const quickLinks = [
     { icon: <KeyRound className="h-4 w-4 text-slate-500" />, label: "Change Password", href: "/dashboard/change-password", desc: "Update your login credentials" },

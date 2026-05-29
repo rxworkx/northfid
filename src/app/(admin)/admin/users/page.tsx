@@ -32,7 +32,7 @@ export default async function AdminUsersPage({ searchParams }: PageProps) {
       skip: (page - 1) * limit, take: limit,
       select: {
         id: true, firstName: true, lastName: true, username: true,
-        email: true, phone: true, country: true, status: true,
+        email: true, phone: true, country: true, status: true, role: true,
         emailVerified: true, isCopyTrader: true, mustResetPassword: true, createdAt: true,
         wallet: { select: { balance: true } },
         kyc: { select: { status: true } },
@@ -41,15 +41,7 @@ export default async function AdminUsersPage({ searchParams }: PageProps) {
     db.user.count({ where }),
   ]);
 
-  const userIds = users.map((u) => u.id);
-  const roleRows = userIds.length
-    ? await db.$queryRawUnsafe<Array<{ id: string; role: string }>>(
-        `SELECT id, role FROM users WHERE id IN (${userIds.map(() => "?").join(",")})`,
-        ...userIds
-      )
-    : [];
-  const roleMap = new Map(roleRows.map((r) => [r.id, r.role]));
-  const usersWithRole = users.map((u) => ({ ...u, role: roleMap.get(u.id) ?? "user" }));
+  const usersWithRole = users;
 
   const pages = Math.ceil(total / limit);
 

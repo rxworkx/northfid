@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import { type ButtonHTMLAttributes, forwardRef } from "react";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "secondary" | "ghost" | "danger" | "outline";
+  variant?: "primary" | "secondary" | "ghost" | "danger" | "outline" | "brand";
   size?: "sm" | "md" | "lg";
   loading?: boolean;
 }

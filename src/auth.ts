@@ -64,6 +64,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             password: true,
             emailVerified: true,
             status: true,
+            role: true,
             kyc: { select: { status: true } },
           },
         });
@@ -75,12 +76,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         if (user.status !== "active") return null;
 
-        // Fetch role via raw SQL — bypasses stale Prisma generated types
-        const roleRow = await db.$queryRawUnsafe<Array<{ role: string }>>(
-          `SELECT role FROM users WHERE id = ?`,
-          user.id
-        );
-        const role = roleRow[0]?.role ?? "user";
+        const role = user.role ?? "user";
 
         return {
           id: user.id,

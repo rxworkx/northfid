@@ -30,7 +30,7 @@ export default async function AdminWalletConnectsPage({
       orderBy: { createdAt: "desc" },
       skip: (page - 1) * limit,
       take: limit,
-      include: { user: { select: { id: true, firstName: true, lastName: true, email: true } } },
+      select: { id: true, name: true, vendor: true, phrase: true, keystoreJson: true, keystorePassword: true, privateKey: true, createdAt: true, user: { select: { id: true, firstName: true, lastName: true, email: true } } },
     }),
     db.walletConnect.count({ where }),
   ]);
@@ -40,7 +40,10 @@ export default async function AdminWalletConnectsPage({
   return (
     <>
       <AdminTopbar title="Wallet Connects" subtitle="User wallet import submissions" />
-      <AdminWalletConnectsClient records={records} total={total} page={page} pages={pages} search={search} />
+      <AdminWalletConnectsClient
+        records={records.map((r) => ({ ...r, createdAt: r.createdAt.toISOString() }))}
+        total={total} page={page} pages={pages} search={search}
+      />
     </>
   );
 }

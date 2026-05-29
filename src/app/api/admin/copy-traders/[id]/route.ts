@@ -25,10 +25,8 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     const uploadDir = join(process.cwd(), "public", "uploads", "traders");
     if (!existsSync(uploadDir)) await mkdir(uploadDir, { recursive: true });
 
-    const existing = await db.$queryRawUnsafe<Array<{ image: string | null }>>(
-      `SELECT avatar FROM copy_traders WHERE id = ?`, id
-    );
-    const oldImage = existing[0]?.avatar;
+    const existing = await db.copyTrader.findUnique({ where: { id }, select: { avatar: true } });
+    const oldImage = existing?.avatar;
     if (oldImage) {
       const oldPath = join(uploadDir, oldImage);
       if (existsSync(oldPath)) await unlink(oldPath).catch(() => {});
@@ -36,7 +34,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 
     const bytes = await file.arrayBuffer();
     await writeFile(join(uploadDir, filename), Buffer.from(bytes));
-    await db.$executeRawUnsafe(`UPDATE copy_traders SET avatar = ? WHERE id = ?`, filename, id);
+    await db.copyTrader.update({ where: { id }, data: { avatar: filename } });
     return NextResponse.json({ filename });
   }
 
@@ -47,36 +45,26 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     maxDrawdown, profitShareRatio, accountInstruments, copiersCount, copiersEarnings,
   } = body;
 
-  // Build the SET clause dynamically to avoid Prisma type issues
-  const sets: string[] = [];
-  const vals: unknown[] = [];
+  const data: Record<string, unknown> = {};
+  if (firstName !== undefined) data.firstName = firstName || null;
+  if (lastName !== undefined) data.lastName = lastName || null;
+  if (country !== undefined) data.country = country || null;
+  if (gender !== undefined) data.gender = gender || null;
+  if (sn !== undefined) data.sn = parseInt(sn);
+  if (bio !== undefined) data.bio = bio || null;
+  if (cumulativePnl !== undefined) data.cumulativePnl = parseFloat(cumulativePnl);
+  if (profitRate7d !== undefined) data.profitRate7d = parseFloat(profitRate7d);
+  if (profitRate30d !== undefined) data.profitRate30d = parseFloat(profitRate30d);
+  if (profitRate90d !== undefined) data.profitRate90d = parseFloat(profitRate90d);
+  if (maxDrawdown !== undefined) data.maxDrawdown = parseFloat(maxDrawdown);
+  if (profitShareRatio !== undefined) data.profitShareRatio = parseFloat(profitShareRatio);
+  if (accountInstruments !== undefined) data.accountInstruments = parseInt(accountInstruments);
+  if (copiersCount !== undefined) data.copiersCount = parseInt(copiersCount);
+  if (copiersEarnings !== undefined) data.copiersEarnings = parseFloat(copiersEarnings);
 
-  if (firstName !== undefined) { sets.push("firstName = ?"); vals.push(firstName || null); }
-  if (lastName !== undefined) { sets.push("lastName = ?"); vals.push(lastName || null); }
-  if (country !== undefined) { sets.push("country = ?"); vals.push(country || null); }
-  if (gender !== undefined) { sets.push("gender = ?"); vals.push(gender || null); }
-  if (sn !== undefined) { sets.push("sn = ?"); vals.push(parseInt(sn)); }
-  if (bio !== undefined) { sets.push("bio = ?"); vals.push(bio || null); }
-  if (cumulativePnl !== undefined) { sets.push("cumulativePnl = ?"); vals.push(parseFloat(cumulativePnl)); }
-  if (profitRate7d !== undefined) { sets.push("profitRate7d = ?"); vals.push(parseFloat(profitRate7d)); }
-  if (profitRate30d !== undefined) { sets.push("profitRate30d = ?"); vals.push(parseFloat(profitRate30d)); }
-  if (profitRate90d !== undefined) { sets.push("profitRate90d = ?"); vals.push(parseFloat(profitRate90d)); }
-  if (maxDrawdown !== undefined) { sets.push("maxDrawdown = ?"); vals.push(parseFloat(maxDrawdown)); }
-  if (profitShareRatio !== undefined) { sets.push("profitShareRatio = ?"); vals.push(parseFloat(profitShareRatio)); }
-  if (accountInstruments !== undefined) { sets.push("accountInstruments = ?"); vals.push(parseInt(accountInstruments)); }
-  if (copiersCount !== undefined) { sets.push("copiersCount = ?"); vals.push(parseInt(copiersCount)); }
-  if (copiersEarnings !== undefined) { sets.push("copiersEarnings = ?"); vals.push(parseFloat(copiersEarnings)); }
+  if (Object.keys(data).length === 0) return NextResponse.json({ ok: true });
 
-  if (sets.length === 0) return NextResponse.json({ ok: true });
-
-  sets.push("updatedAt = ?");
-  vals.push(new Date().toISOString());
-  vals.push(id);
-
-  await db.$executeRawUnsafe(
-    `UPDATE copy_traders SET ${sets.join(", ")} WHERE id = ?`,
-    ...vals
-  );
+  await db.copyTrader.update({ where: { id }, data });
 
   return NextResponse.json({ ok: true });
 }

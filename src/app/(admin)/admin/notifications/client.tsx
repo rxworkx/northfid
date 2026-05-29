@@ -83,7 +83,7 @@ export function AdminNotificationsClient({ rows, total, page, pages, users }: Pr
     type: "announcement",
     title: "",
     body: "",
-    href: "i",
+    href: "",
     delivery: "email" as DeliveryMode,
   });
 

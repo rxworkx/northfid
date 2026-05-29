@@ -25,11 +25,8 @@ export async function POST(req: Request) {
   if (!existsSync(uploadDir)) await mkdir(uploadDir, { recursive: true });
 
   // Delete old image if set
-  const existing = await db.$queryRawUnsafe<Array<{ image: string | null }>>(
-    `SELECT image FROM users WHERE id = ?`,
-    session.user.id
-  );
-  const oldImage = existing[0]?.image;
+  const existing = await db.user.findUnique({ where: { id: session.user.id }, select: { image: true } });
+  const oldImage = existing?.image;
   if (oldImage) {
     const oldPath = join(uploadDir, oldImage);
     if (existsSync(oldPath)) await unlink(oldPath).catch(() => {});
@@ -38,7 +35,7 @@ export async function POST(req: Request) {
   const bytes = await file.arrayBuffer();
   await writeFile(join(uploadDir, filename), Buffer.from(bytes));
 
-  await db.$executeRawUnsafe(`UPDATE users SET image = ? WHERE id = ?`, filename, session.user.id);
+  await db.user.update({ where: { id: session.user.id }, data: { image: filename } });
 
   return NextResponse.json({ filename });
 }

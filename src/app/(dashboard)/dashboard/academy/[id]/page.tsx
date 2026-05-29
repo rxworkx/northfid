@@ -53,7 +53,7 @@ export default async function AcademyArticlePage({ params }: { params: Promise<{
 
         <CardContent className="p-6 sm:p-8 space-y-4">
           <div className="flex items-center gap-3">
-            <Badge variant="secondary" className="capitalize">{item.category}</Badge>
+            <Badge variant="default" className="capitalize">{item.category}</Badge>
           </div>
 
           <h1 className="text-2xl font-bold text-slate-900 leading-snug">{item.title}</h1>

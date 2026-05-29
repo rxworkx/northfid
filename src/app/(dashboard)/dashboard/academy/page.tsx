@@ -6,7 +6,7 @@ import Link from "next/link";
 export const metadata = { title: "Academy" };
 
 export default async function AcademyPage() {
-  const items = await (db as any).academyArticle.findMany({
+  const items = await db.academyArticle.findMany({
     where: { published: true },
     orderBy: [{ category: "asc" }, { orderIndex: "asc" }],
   });

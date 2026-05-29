@@ -77,7 +77,7 @@ export async function POST(req: NextRequest) {
     // Log using admin's userId so it appears in the notifications log
     await db.notification.create({
       data: {
-        userId: session.user.id,
+        userId: session.user!.id as string,
         type: type || "announcement",
         title: `[→ ${customEmail}] ${title}`,
         body,

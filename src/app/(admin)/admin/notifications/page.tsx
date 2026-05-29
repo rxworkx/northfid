@@ -42,7 +42,7 @@ export default async function AdminNotificationsPage({ searchParams }: PageProps
         body: g.body,
         href: g.href,
         delivery: g.delivery,
-        createdAt: g._max.createdAt as string,
+        createdAt: (g._max.createdAt ?? new Date()).toISOString(),
         recipientCount: g._count.id,
         user: rep!.user,
       };
