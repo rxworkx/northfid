@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
+import { resolveStorageUrl } from "@/lib/storage";
 import { notFound } from "next/navigation";
 import { formatCurrency } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -35,9 +36,8 @@ export default async function TraderProfilePage({ params }: { params: Promise<{ 
   const firstName = ct.firstName ?? "";
   const lastName = ct.lastName ?? "";
 
-  const avatarUrl = !ct.avatar
-    ? `https://api.dicebear.com/8.x/initials/svg?seed=${encodeURIComponent(firstName + " " + lastName)}&backgroundColor=2a2a2a&textColor=ffffff`
-    : `/uploads/traders/${ct.avatar}`;
+  const avatarUrl = resolveStorageUrl(ct.avatar, "traders")
+    ?? `https://api.dicebear.com/8.x/initials/svg?seed=${encodeURIComponent(firstName + " " + lastName)}&backgroundColor=2a2a2a&textColor=ffffff`;
 
   const stats = [
     { label: "Cumulative PnL",    value: formatCurrency(ct.cumulativePnl),             icon: <TrendingUp className="h-4 w-4 text-slate-700" />,   positive: ct.cumulativePnl >= 0 },

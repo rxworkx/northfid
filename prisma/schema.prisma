@@ -16,7 +16,7 @@ model User {
   password         String
   firstName        String
   lastName         String
-  image            String   @default("")
+  image            String?
   country          String   @default("")
   gender           String   @default("")
   emailVerified    Boolean  @default(false)

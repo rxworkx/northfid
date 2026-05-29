@@ -186,13 +186,13 @@ export function AdminKycClient({ kycs, total, page, pages, currentStatus, search
                     {viewKyc.docFront && (
                       <div>
                         <p className="text-xs text-slate-500 mb-1.5">Front</p>
-                        <img src={`/uploads/kyc/${viewKyc.docFront}`} alt="Doc front" className="w-full rounded-xl border border-slate-200 object-cover max-h-48" />
+                        <img src={viewKyc.docFront} alt="Doc front" className="w-full rounded-xl border border-slate-200 object-cover max-h-48" />
                       </div>
                     )}
                     {viewKyc.docBack && (
                       <div>
                         <p className="text-xs text-slate-500 mb-1.5">Back</p>
-                        <img src={`/uploads/kyc/${viewKyc.docBack}`} alt="Doc back" className="w-full rounded-xl border border-slate-200 object-cover max-h-48" />
+                        <img src={viewKyc.docBack} alt="Doc back" className="w-full rounded-xl border border-slate-200 object-cover max-h-48" />
                       </div>
                     )}
                   </div>

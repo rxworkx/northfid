@@ -7,7 +7,7 @@ import { toast } from "@/components/ui/toaster";
 
 interface AvatarUploadProps {
   userId: string;
-  currentImage: string;
+  currentImage: string | null;
   name: string;
 }
 
@@ -17,9 +17,8 @@ export function AvatarUpload({ userId, currentImage, name }: AvatarUploadProps) 
   const [preview, setPreview] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
 
-  const avatarUrl = preview ?? (!currentImage
-    ? `https://api.dicebear.com/8.x/initials/svg?seed=${encodeURIComponent(name)}&backgroundColor=2a2a2a&textColor=ffffff`
-    : `/uploads/users/${currentImage}`);
+  const avatarUrl = preview || currentImage
+    || `https://api.dicebear.com/8.x/initials/svg?seed=${encodeURIComponent(name)}&backgroundColor=2a2a2a&textColor=ffffff`;
 
   async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -46,6 +45,7 @@ export function AvatarUpload({ userId, currentImage, name }: AvatarUploadProps) 
       if (!res.ok) throw new Error();
       toast.success("Profile picture updated");
       router.refresh();
+      router.push("/dashboard/profile");
     } catch {
       toast.error("Upload failed. Please try again.");
       setPreview(null);

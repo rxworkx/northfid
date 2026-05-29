@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
+import { resolveStorageUrl } from "@/lib/storage";
 import { ProfileForm } from "@/components/dashboard/profile-form";
 import { AvatarUpload } from "@/components/dashboard/avatar-upload";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -21,7 +22,7 @@ export default async function ProfilePage() {
   });
   if (!user) return null;
 
-  const image = user.image ?? "";
+  const image = resolveStorageUrl(user.image, "users");
   const kycStatus = user.kyc?.status ?? "none";
 
   const quickLinks = [

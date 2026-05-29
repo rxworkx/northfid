@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { getAdminSession, unauthorized } from "../../_auth";
-import { writeFile, mkdir, unlink } from "fs/promises";
-import { join, extname } from "path";
-import { existsSync } from "fs";
+import { extname } from "path";
+import { uploadFile, deleteFile } from "@/lib/storage";
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await getAdminSession();
@@ -21,19 +20,16 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     if (file.size > 2 * 1024 * 1024) return NextResponse.json({ error: "Max 2MB" }, { status: 400 });
 
     const ext = extname(file.name) || ".jpg";
-    const filename = `trader_${id}_${Date.now()}${ext}`;
-    const uploadDir = join(process.cwd(), "public", "uploads", "traders");
-    if (!existsSync(uploadDir)) await mkdir(uploadDir, { recursive: true });
+    const filename = `ct_${Date.now()}${ext}`;
+    const path = `traders/${filename}`;
 
     const existing = await db.copyTrader.findUnique({ where: { id }, select: { avatar: true } });
-    const oldImage = existing?.avatar;
-    if (oldImage) {
-      const oldPath = join(uploadDir, oldImage);
-      if (existsSync(oldPath)) await unlink(oldPath).catch(() => {});
+    if (existing?.avatar) {
+      await deleteFile("uploads", `traders/${existing.avatar}`).catch(() => {});
     }
 
-    const bytes = await file.arrayBuffer();
-    await writeFile(join(uploadDir, filename), Buffer.from(bytes));
+    const buffer = Buffer.from(await file.arrayBuffer());
+    await uploadFile("uploads", path, buffer, file.type);
     await db.copyTrader.update({ where: { id }, data: { avatar: filename } });
     return NextResponse.json({ filename });
   }

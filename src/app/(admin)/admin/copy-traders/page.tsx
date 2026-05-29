@@ -1,5 +1,6 @@
 import { AdminTopbar } from "@/components/admin/topbar";
 import { db } from "@/lib/db";
+import { resolveStorageUrl } from "@/lib/storage";
 import { AdminCopyTradersClient } from "./client";
 
 interface PageProps {
@@ -48,7 +49,7 @@ export default async function AdminCopyTradersPage({ searchParams }: PageProps) 
     traderLastName: ct.lastName ?? null,
     traderCountry: ct.country ?? null,
     traderGender: ct.gender ?? null,
-    traderAvatar: ct.avatar ?? null,
+    traderAvatar: resolveStorageUrl(ct.avatar, "traders"),
   }));
 
   return (

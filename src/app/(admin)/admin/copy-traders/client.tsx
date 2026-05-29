@@ -134,9 +134,7 @@ export function AdminCopyTradersClient({ copyTraders, total, page, pages, search
 
       <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-4">
         {copyTraders.map((ct) => {
-          const rawAvatar = ct.traderAvatar;
-          const resolvedAvatar = rawAvatar ? rawAvatar.replace(/^user_\d+_/, "ct_") : null;
-          const imageUrl = resolvedAvatar ? `/uploads/traders/${resolvedAvatar}` : null;
+          const imageUrl = ct.traderAvatar ?? null;
           const dicebearUrl = `https://api.dicebear.com/8.x/initials/svg?seed=${encodeURIComponent(displayName(ct))}&backgroundColor=111111&textColor=ffffff`;
           const profit30dPositive = ct.profitRate30d >= 0;
           return (

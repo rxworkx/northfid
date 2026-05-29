@@ -1,5 +1,6 @@
 import { AdminTopbar } from "@/components/admin/topbar";
 import { db } from "@/lib/db";
+import { resolveStorageUrl } from "@/lib/storage";
 import { notFound } from "next/navigation";
 import { AdminUserDetailClient } from "./client";
 
@@ -28,10 +29,12 @@ export default async function AdminUserDetailPage({ params }: PageProps) {
 
   if (!user) notFound();
 
+  const resolvedUser = { ...user, image: resolveStorageUrl(user.image, "users") };
+
   return (
     <>
       <AdminTopbar title={`${user.firstName} ${user.lastName}`} subtitle={user.email} />
-      <AdminUserDetailClient user={user as any} />
+      <AdminUserDetailClient user={resolvedUser as any} />
     </>
   );
 }

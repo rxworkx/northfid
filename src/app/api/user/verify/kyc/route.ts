@@ -1,19 +1,17 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
-import { writeFile, mkdir } from "fs/promises";
-import { join, extname } from "path";
-import { existsSync } from "fs";
+import { extname } from "path";
+import { uploadFile } from "@/lib/storage";
 
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
-const MAX_SIZE = 8 * 1024 * 1024; // 8 MB
+const MAX_SIZE = 8 * 1024 * 1024;
 
 async function saveFile(file: File, userId: string, label: string): Promise<string> {
   const ext = extname(file.name) || ".jpg";
   const filename = `kyc_${userId}_${label}_${Date.now()}${ext}`;
-  const uploadDir = join(process.cwd(), "public", "uploads", "kyc");
-  if (!existsSync(uploadDir)) await mkdir(uploadDir, { recursive: true });
-  await writeFile(join(uploadDir, filename), Buffer.from(await file.arrayBuffer()));
+  const buffer = Buffer.from(await file.arrayBuffer());
+  await uploadFile("uploads", `kyc/${filename}`, buffer, file.type);
   return filename;
 }
 
@@ -24,7 +22,6 @@ export async function POST(req: Request) {
   const userId = session.user.id;
   const formData = await req.formData();
 
-  // Personal info
   const firstName    = (formData.get("firstName")    as string | null)?.trim();
   const lastName     = (formData.get("lastName")     as string | null)?.trim();
   const dateOfBirth  = (formData.get("dateOfBirth")  as string | null)?.trim();
@@ -35,8 +32,6 @@ export async function POST(req: Request) {
   const state        = (formData.get("state")        as string | null)?.trim() || null;
   const postalCode   = (formData.get("postalCode")   as string | null)?.trim();
   const country      = (formData.get("country")      as string | null)?.trim();
-
-  // Document info
   const docType      = (formData.get("docType")      as string | null)?.trim();
   const docNumber    = (formData.get("docNumber")    as string | null)?.trim();
   const docIssueDate = (formData.get("docIssueDate") as string | null)?.trim();
@@ -44,7 +39,6 @@ export async function POST(req: Request) {
   const docFrontFile = formData.get("docFront") as File | null;
   const docBackFile  = formData.get("docBack")  as File | null;
 
-  // Validate required fields
   const required = { firstName, lastName, dateOfBirth, nationality, addressLine1, city, postalCode, country, docType, docNumber, docIssueDate, docExpiryDate };
   for (const [key, val] of Object.entries(required)) {
     if (!val) return NextResponse.json({ error: `Missing field: ${key}` }, { status: 400 });
@@ -52,18 +46,16 @@ export async function POST(req: Request) {
   if (!docFrontFile) return NextResponse.json({ error: "Front of ID is required" }, { status: 400 });
   if (docType !== "passport" && !docBackFile) return NextResponse.json({ error: "Back of ID is required" }, { status: 400 });
 
-  // Validate files
   for (const [label, file] of [["docFront", docFrontFile], ["docBack", docBackFile]] as [string, File | null][]) {
     if (!file) continue;
     if (!ALLOWED_TYPES.includes(file.type)) return NextResponse.json({ error: `${label}: only JPEG/PNG/WEBP allowed` }, { status: 400 });
     if (file.size > MAX_SIZE) return NextResponse.json({ error: `${label}: max 8 MB` }, { status: 400 });
   }
 
-  // Save files
   const docFront = await saveFile(docFrontFile!, userId, "front");
   const docBack  = docBackFile ? await saveFile(docBackFile, userId, "back") : null;
 
-  await (db as any).kyc.upsert({
+  await db.kyc.upsert({
     where: { userId },
     create: {
       userId, status: "pending",

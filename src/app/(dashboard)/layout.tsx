@@ -1,9 +1,12 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
+import { resolveStorageUrl } from "@/lib/storage";
 import { DashboardSidebar } from "@/components/dashboard/sidebar";
 import { DashboardTopbar } from "@/components/dashboard/topbar";
 import { MobilePageTitle } from "@/components/dashboard/mobile-page-title";
+
+export const dynamic = "force-dynamic";
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
@@ -23,6 +26,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   const flatUser = {
     ...user,
+    image: resolveStorageUrl(user.image, "users"),
     walletBalance: user.wallet?.balance ?? 0,
     kycStatus: user.kyc?.status ?? "none",
   };

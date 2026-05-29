@@ -24,8 +24,7 @@ interface CopyTraderCardProps {
 
 export function CopyTraderCard({ trader }: CopyTraderCardProps) {
   const dicebearUrl = `https://api.dicebear.com/8.x/initials/svg?seed=${encodeURIComponent(trader.firstName + " " + trader.lastName)}&backgroundColor=111111&textColor=ffffff`;
-  const resolvedAvatar = trader.avatar ? trader.avatar.replace(/^user_\d+_/, "ct_") : null;
-  const [imgSrc, setImgSrc] = useState(resolvedAvatar ? `/uploads/traders/${resolvedAvatar}` : dicebearUrl);
+  const [imgSrc, setImgSrc] = useState(trader.avatar ?? dicebearUrl);
 
   const profit30dPositive = trader.profitRate30d >= 0;
 

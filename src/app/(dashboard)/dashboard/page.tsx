@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
+import { resolveStorageUrl } from "@/lib/storage";
 import { CopyTraderCard } from "@/components/dashboard/copy-trader-card";
 import { BalanceSummary } from "@/components/dashboard/balance-summary";
 import { TradingViewMarketOverview } from "@/components/dashboard/tradingview-market-overview";
@@ -126,7 +127,7 @@ export default async function DashboardPage() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
             {topByProfit.map((t) => (
-              <CopyTraderCard key={t.id} trader={{ ...t, firstName: t.firstName ?? "", lastName: t.lastName ?? "" }} />
+              <CopyTraderCard key={t.id} trader={{ ...t, firstName: t.firstName ?? "", lastName: t.lastName ?? "", avatar: resolveStorageUrl(t.avatar, "traders") }} />
             ))}
           </div>
         )}
@@ -150,7 +151,7 @@ export default async function DashboardPage() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
             {topByCopiers.map((t) => (
-              <CopyTraderCard key={t.id} trader={{ ...t, firstName: t.firstName ?? "", lastName: t.lastName ?? "" }} />
+              <CopyTraderCard key={t.id} trader={{ ...t, firstName: t.firstName ?? "", lastName: t.lastName ?? "", avatar: resolveStorageUrl(t.avatar, "traders") }} />
             ))}
           </div>
         )}

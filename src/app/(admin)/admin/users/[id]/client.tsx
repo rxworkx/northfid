@@ -75,7 +75,13 @@ export function AdminUserDetailClient({ user }: { user: any }) {
         {/* Edit Form */}
         <div className="lg:col-span-2 bg-white rounded-2xl border border-slate-200 p-6">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-base font-semibold text-slate-900">User Details</h2>
+            <div className="flex items-center gap-3">
+              {user.image
+                ? <img src={user.image} alt={user.firstName} className="h-10 w-10 rounded-full object-cover border border-slate-200 shrink-0" />
+                : <div className="h-10 w-10 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-sm font-semibold text-slate-500 shrink-0">{user.firstName?.[0]}{user.lastName?.[0]}</div>
+              }
+              <h2 className="text-base font-semibold text-slate-900">User Details</h2>
+            </div>
             <div className="flex items-center gap-2">
               {user.role === "admin" && (
                 <span className="text-xs font-bold px-2 py-1 rounded-md text-white bg-slate-900">ADMIN</span>

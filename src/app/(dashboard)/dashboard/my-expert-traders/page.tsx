@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
+import { resolveStorageUrl } from "@/lib/storage";
 import { CopyTraderCard } from "@/components/dashboard/copy-trader-card";
 import Link from "next/link";
 import { Users, ArrowRight } from "lucide-react";
@@ -70,7 +71,7 @@ export default async function MyExpertTradersPage() {
         {traders.map((ct) => (
           <CopyTraderCard
             key={ct.id}
-            trader={{ ...ct, firstName: ct.firstName ?? "", lastName: ct.lastName ?? "" }}
+            trader={{ ...ct, firstName: ct.firstName ?? "", lastName: ct.lastName ?? "", avatar: resolveStorageUrl(ct.avatar, "traders") }}
           />
         ))}
       </div>

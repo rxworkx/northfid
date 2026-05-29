@@ -62,9 +62,8 @@ export function DashboardSidebar({ user }: { user: SidebarUser }) {
     return () => window.removeEventListener("toggle-sidebar", handler);
   }, []);
 
-  const avatarUrl = !user.image
-    ? `https://api.dicebear.com/8.x/initials/svg?seed=${encodeURIComponent(user.firstName + " " + user.lastName)}&backgroundColor=2a2a2a&textColor=ffffff`
-    : `/uploads/users/${user.image}`;
+  const avatarUrl = user.image
+    || `https://api.dicebear.com/8.x/initials/svg?seed=${encodeURIComponent(user.firstName + " " + user.lastName)}&backgroundColor=2a2a2a&textColor=ffffff`;
 
   const SidebarContent = () => (
     <div className="flex h-full flex-col">
