@@ -1,6 +1,11 @@
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+let _resend: Resend | null = null;
+function getResend() {
+  if (!_resend) _resend = new Resend(process.env.RESEND_API_KEY);
+  return _resend;
+}
+
 const FROM = process.env.EMAIL_FROM ?? "Pipnova <noreply@pipnova.com>";
 const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME ?? "Pipnova";
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
@@ -97,8 +102,8 @@ function baseTemplate(title: string, body: string) {
 </html>`;
 }
 
-async function sendEmail(payload: Parameters<typeof resend.emails.send>[0]) {
-  const { data, error } = await resend.emails.send(payload);
+async function sendEmail(payload: Parameters<Resend["emails"]["send"]>[0]) {
+  const { data, error } = await getResend().emails.send(payload);
   if (error) {
     console.error("[resend] send failed:", JSON.stringify(error));
     throw new Error(`Resend error: ${error.message}`);
