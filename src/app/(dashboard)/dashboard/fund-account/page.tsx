@@ -27,7 +27,6 @@ export default async function FundAccountPage() {
       <div
         className="relative rounded-2xl overflow-hidden bg-black text-white p-7"
       >
-        <div className="absolute right-0 top-0 h-48 w-48 rounded-full bg-orange-500/10 blur-3xl pointer-events-none" />
         <div className="relative">
           <p className="text-xs font-semibold uppercase tracking-widest text-white/40 mb-2">Current Balance</p>
           <p className="text-4xl font-bold tracking-tight">{formatCurrency(balance)}</p>
@@ -35,7 +34,7 @@ export default async function FundAccountPage() {
       </div>
 
       {/* Trust badges */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         {[
           { icon: <ShieldCheck className="h-4 w-4 text-orange-500" />, text: "Secure & Encrypted" },
           { icon: <Zap className="h-4 w-4 text-orange-500" />, text: "Instant Processing" },

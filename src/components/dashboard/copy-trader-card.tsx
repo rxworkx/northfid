@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Users } from "lucide-react";
+import { CopyButton } from "@/components/dashboard/copy-button";
 
 interface Trader {
   id: string;
@@ -20,9 +21,11 @@ interface Trader {
 
 interface CopyTraderCardProps {
   trader: Trader;
+  userId: string;
+  isCopied: boolean;
 }
 
-export function CopyTraderCard({ trader }: CopyTraderCardProps) {
+export function CopyTraderCard({ trader, userId, isCopied }: CopyTraderCardProps) {
   const dicebearUrl = `https://api.dicebear.com/8.x/initials/svg?seed=${encodeURIComponent(trader.firstName + " " + trader.lastName)}&backgroundColor=111111&textColor=ffffff`;
   const [imgSrc, setImgSrc] = useState(trader.avatar ?? dicebearUrl);
 
@@ -35,10 +38,10 @@ export function CopyTraderCard({ trader }: CopyTraderCardProps) {
   }
 
   return (
-    <Link href={`/dashboard/expert-traders/${trader.id}`} className="group relative rounded-2xl bg-white border border-slate-100 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 overflow-hidden block">
+    <div className="group relative rounded-2xl bg-white border border-slate-100 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 overflow-hidden">
       <div className={`h-0.5 w-full ${profit30dPositive ? "bg-linear-to-r from-emerald-400 to-emerald-500" : "bg-linear-to-r from-red-400 to-red-500"}`} />
 
-      <div className="p-4">
+      <Link href={`/dashboard/expert-traders/${trader.id}`} className="block p-4">
         <div className="flex items-start gap-3 mb-3">
           <img
             src={imgSrc}
@@ -61,22 +64,28 @@ export function CopyTraderCard({ trader }: CopyTraderCardProps) {
         </div>
 
         <div className="flex justify-between gap-2">
-          <div className="rounded-lg bg-slate-50 p-2 min-w-[30%]">
+          <div className="p-2 min-w-[30%]">
             <p className="text-[10px] text-slate-400 mb-0.5">30D</p>
             <p className={`text-sm font-bold ${trader.profitRate30d >= 0 ? "text-emerald-600" : "text-red-500"}`}>
               {trader.profitRate30d >= 0 ? "+" : ""}{trader.profitRate30d.toFixed(1)}%
             </p>
           </div>
-          <div className="rounded-lg bg-slate-50 p-2 min-w-[30%]">
+          <div className="p-2 min-w-[30%]">
             <p className="text-[10px] text-slate-400 mb-0.5">Instruments</p>
             <p className="text-sm font-bold text-slate-700">{trader.accountInstruments}</p>
           </div>
-          <div className="rounded-lg bg-slate-50 p-2 min-w-[30%]">
+          <div className="p-2 min-w-[30%]">
             <p className="text-[10px] text-slate-400 mb-0.5">Cum. PnL</p>
             <p className="text-sm font-bold text-slate-700">{shortPnl(trader.cumulativePnl)}</p>
           </div>
         </div>
-      </div>
-    </Link>
+      </Link>
+
+      {trader.userId && (
+        <div className="px-4 pb-4">
+          <CopyButton traderId={trader.userId} userId={userId} isCopied={isCopied} />
+        </div>
+      )}
+    </div>
   );
 }

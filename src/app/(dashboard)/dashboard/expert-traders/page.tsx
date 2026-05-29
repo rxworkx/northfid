@@ -11,6 +11,7 @@ const PER_PAGE = 20;
 
 export default async function ExpertTradersPage({ searchParams }: { searchParams: Promise<{ sort?: string; page?: string; search?: string }> }) {
   const session = await auth();
+  const userId = session!.user!.id!;
   const params = await searchParams;
   const sort = params.sort ?? "profit30d";
   const page = Math.max(1, parseInt(params.page ?? "1"));
@@ -26,7 +27,7 @@ export default async function ExpertTradersPage({ searchParams }: { searchParams
     ? { OR: [{ firstName: { contains: search } }, { lastName: { contains: search } }] }
     : undefined;
 
-  const [traders, total] = await Promise.all([
+  const [traders, total, copiedRelations] = await Promise.all([
     db.copyTrader.findMany({
       where,
       orderBy: [orderBy, { sn: "desc" }],
@@ -40,7 +41,10 @@ export default async function ExpertTradersPage({ searchParams }: { searchParams
       },
     }),
     db.copyTrader.count({ where }),
+    db.copyRelation.findMany({ where: { copierId: userId }, select: { copiedTraderId: true } }),
   ]);
+
+  const copiedSet = new Set(copiedRelations.map((r) => r.copiedTraderId));
 
   const totalPages = Math.ceil(total / PER_PAGE);
 
@@ -62,7 +66,6 @@ export default async function ExpertTradersPage({ searchParams }: { searchParams
   return (
     <div className="space-y-6">
       <div className="rounded-2xl bg-black p-6 text-white relative overflow-hidden">
-        <div className="absolute right-0 top-0 h-40 w-40 rounded-full bg-orange-500/10 blur-3xl pointer-events-none" />
         <div className="relative flex items-start justify-between gap-4">
           <div>
             <h1 className="text-xl font-bold mb-1">Expert Traders</h1>
@@ -105,6 +108,8 @@ export default async function ExpertTradersPage({ searchParams }: { searchParams
             <CopyTraderCard
               key={t.id}
               trader={{ ...t, firstName: t.firstName ?? "", lastName: t.lastName ?? "", avatar: resolveStorageUrl(t.avatar, "traders") }}
+              userId={userId}
+              isCopied={t.userId ? copiedSet.has(t.userId) : false}
             />
           ))}
         </div>

@@ -53,7 +53,6 @@ export default async function MyExpertTradersPage() {
   return (
     <div className="space-y-6">
       <div className="rounded-2xl bg-black p-6 text-white relative overflow-hidden">
-        <div className="absolute right-0 top-0 h-40 w-40 rounded-full bg-orange-500/10 blur-3xl pointer-events-none" />
         <div className="relative flex items-start justify-between gap-4">
           <div>
             <h1 className="text-xl font-bold mb-1">My Copied Traders</h1>
@@ -72,6 +71,8 @@ export default async function MyExpertTradersPage() {
           <CopyTraderCard
             key={ct.id}
             trader={{ ...ct, firstName: ct.firstName ?? "", lastName: ct.lastName ?? "", avatar: resolveStorageUrl(ct.avatar, "traders") }}
+            userId={userId}
+            isCopied={true}
           />
         ))}
       </div>

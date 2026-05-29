@@ -127,7 +127,7 @@ export default async function DashboardPage() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
             {topByProfit.map((t) => (
-              <CopyTraderCard key={t.id} trader={{ ...t, firstName: t.firstName ?? "", lastName: t.lastName ?? "", avatar: resolveStorageUrl(t.avatar, "traders") }} />
+              <CopyTraderCard key={t.id} trader={{ ...t, firstName: t.firstName ?? "", lastName: t.lastName ?? "", avatar: resolveStorageUrl(t.avatar, "traders") }} userId={userId} isCopied={t.userId ? copiedIds.has(t.userId) : false} />
             ))}
           </div>
         )}
@@ -151,7 +151,7 @@ export default async function DashboardPage() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
             {topByCopiers.map((t) => (
-              <CopyTraderCard key={t.id} trader={{ ...t, firstName: t.firstName ?? "", lastName: t.lastName ?? "", avatar: resolveStorageUrl(t.avatar, "traders") }} />
+              <CopyTraderCard key={t.id} trader={{ ...t, firstName: t.firstName ?? "", lastName: t.lastName ?? "", avatar: resolveStorageUrl(t.avatar, "traders") }} userId={userId} isCopied={t.userId ? copiedIds.has(t.userId) : false} />
             ))}
           </div>
         )}

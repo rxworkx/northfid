@@ -35,7 +35,6 @@ export default async function ReferralPage() {
       <div
         className="relative rounded-2xl overflow-hidden bg-black text-white p-7"
       >
-        <div className="absolute right-0 top-0 h-48 w-48 rounded-full bg-orange-500/10 blur-3xl pointer-events-none" />
         <div className="relative">
           <div className="inline-flex items-center gap-2 rounded-full border border-orange-500/30 bg-orange-500/10 px-3 py-1 text-xs font-semibold text-orange-400 mb-4">
             <Gift className="h-3.5 w-3.5" /> Referral Programme

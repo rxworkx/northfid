@@ -39,7 +39,6 @@ export default async function FundPortfolioPage() {
       <div
         className="relative rounded-2xl overflow-hidden bg-black text-white p-7"
       >
-        <div className="absolute right-0 top-0 h-60 w-60 rounded-full bg-orange-500/10 blur-3xl pointer-events-none" />
         <div className="relative">
           <p className="text-xs font-semibold uppercase tracking-widest text-white/40 mb-2">Available Balance</p>
           <p className="text-5xl font-bold tracking-tight mb-6">{formatCurrency(balance)}</p>
@@ -67,7 +66,7 @@ export default async function FundPortfolioPage() {
       </div>
 
       {/* Stats row */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {[
           { label: "Total Deposited", value: totalDeposits, icon: <ArrowDownToLine className="h-4 w-4 text-emerald-500" />, color: "text-emerald-600", bg: "bg-emerald-50" },
           { label: "Total Withdrawn", value: totalWithdrawals, icon: <ArrowUpFromLine className="h-4 w-4 text-amber-500" />, color: "text-amber-600", bg: "bg-amber-50" },

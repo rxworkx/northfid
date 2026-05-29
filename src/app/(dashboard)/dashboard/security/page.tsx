@@ -29,7 +29,6 @@ export default async function SecurityPage() {
       <div
         className="rounded-2xl bg-black p-6 text-white relative overflow-hidden"
       >
-        <div className="absolute right-0 top-0 h-40 w-40 rounded-full bg-orange-500/10 blur-3xl pointer-events-none" />
         <div className="relative flex items-center gap-5">
           <div className="relative shrink-0">
             <svg className="h-16 w-16 -rotate-90" viewBox="0 0 36 36">
