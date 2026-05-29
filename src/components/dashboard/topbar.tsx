@@ -32,7 +32,7 @@ const pageTitles: Record<string, string> = {
 interface TopbarUser {
   firstName: string;
   lastName: string;
-  image: string;
+  image: string | null;
   emailVerified: boolean;
   kycStatus: string;
 }

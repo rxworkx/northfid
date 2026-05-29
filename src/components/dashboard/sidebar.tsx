@@ -20,7 +20,7 @@ interface SidebarUser {
   lastName: string;
   username: string;
   email: string;
-  image: string;
+  image: string | null;
   walletBalance: number;
   emailVerified: boolean;
   kycStatus: string;
