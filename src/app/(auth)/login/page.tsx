@@ -36,6 +36,19 @@ function LoginForm() {
 
   async function onSubmit(data: LoginInput) {
     setServerError("");
+
+    // Check if this account requires a password reset before attempting login
+    const resetCheck = await fetch("/api/auth/check-reset", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ identifier: data.identifier }),
+    }).then((r) => r.json()).catch(() => ({ mustReset: false }));
+
+    if (resetCheck.mustReset) {
+      setServerError("Your account requires a password reset. A reset link has been sent to your email.");
+      return;
+    }
+
     const res = await signIn("credentials", {
       identifier: data.identifier,
       password: data.password,
@@ -50,10 +63,13 @@ function LoginForm() {
     // Record the login session (device detection runs server-side)
     fetch("/api/auth/record-login", { method: "POST" }).catch(() => {});
 
-    // Check if the user is admin and redirect accordingly
+    // Check session flags and redirect accordingly
     const session = await getSession();
     const role = (session?.user as any)?.role;
-    if (role === "admin") {
+    const mustResetPassword = (session?.user as any)?.mustResetPassword;
+    if (mustResetPassword) {
+      router.push("/dashboard/change-password");
+    } else if (role === "admin") {
       router.push("/admin");
     } else {
       router.push(callbackUrl);

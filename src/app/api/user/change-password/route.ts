@@ -20,7 +20,7 @@ export async function POST(req: Request) {
   }
 
   const hashed = await bcrypt.hash(newPassword, 12);
-  await db.user.update({ where: { id: session.user.id }, data: { password: hashed } });
+  await db.user.update({ where: { id: session.user.id }, data: { password: hashed, mustResetPassword: false } });
 
   return NextResponse.json({ success: true });
 }

@@ -63,7 +63,7 @@ export function AdminPaymentMethodsClient({ methods }: { methods: PM[] }) {
   return (
     <main className="flex-1 p-6 space-y-5">
       <div className="flex justify-end">
-        <button onClick={() => { setForm(BLANK); setShowAdd(true); }} className="flex items-center gap-2 h-9 px-4 text-sm font-semibold text-white rounded-lg bg-slate-900 hover:bg-slate-800 transition-colors">
+        <button onClick={() => { setForm(BLANK); setShowAdd(true); }} className="flex items-center gap-2 h-9 px-4 text-sm font-semibold text-white rounded-lg bg-black hover:bg-zinc-900 transition-colors">
           <Plus className="h-4 w-4" /> Add Method
         </button>
       </div>
@@ -174,7 +174,7 @@ export function AdminPaymentMethodsClient({ methods }: { methods: PM[] }) {
               </div>
               <div className="flex justify-end gap-3 pt-2">
                 <button type="button" onClick={() => { setShowAdd(false); setEditItem(null); setError(""); }} className="h-9 px-4 text-sm font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors">Cancel</button>
-                <button type="submit" disabled={saving} className="h-9 px-5 text-sm font-semibold text-white rounded-lg bg-slate-900 hover:bg-slate-800 disabled:opacity-50 transition-colors">
+                <button type="submit" disabled={saving} className="h-9 px-5 text-sm font-semibold text-white rounded-lg bg-black hover:bg-zinc-900 disabled:opacity-50 transition-colors">
                   {saving ? "Saving..." : "Save"}
                 </button>
               </div>

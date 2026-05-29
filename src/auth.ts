@@ -24,6 +24,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.isEmailVerified = u.isEmailVerified as boolean;
         token.kycStatus = u.kycStatus as string;
         token.role = u.role as string;
+        token.mustResetPassword = u.mustResetPassword as boolean;
       }
       return token;
     },
@@ -35,6 +36,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         su.isEmailVerified = token.isEmailVerified;
         su.kycStatus = token.kycStatus;
         su.role = token.role;
+        su.mustResetPassword = token.mustResetPassword;
       }
       return session;
     },
@@ -65,6 +67,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             emailVerified: true,
             status: true,
             role: true,
+            mustResetPassword: true,
             kyc: { select: { status: true } },
           },
         });
@@ -86,6 +89,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           isEmailVerified: user.emailVerified,
           kycStatus: (user as any).kyc?.status ?? "none",
           role,
+          mustResetPassword: user.mustResetPassword,
         } as unknown as Parameters<typeof Credentials>[0] extends infer T ? T : never;
       },
     }),

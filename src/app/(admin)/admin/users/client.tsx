@@ -162,7 +162,7 @@ export function AdminUsersClient({ users, total, page, pages, search: initSearch
                         {u.status}
                       </span>
                       {u.role === "admin" && (
-                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-900 text-white">ADMIN</span>
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-black text-white">ADMIN</span>
                       )}
                       {u.mustResetPassword && (
                         <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-orange-100 text-orange-700 border border-orange-200">RESET</span>

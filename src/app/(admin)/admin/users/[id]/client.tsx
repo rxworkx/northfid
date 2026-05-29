@@ -15,11 +15,26 @@ const STATUS_CHIP: Record<string, string> = {
   failed: "bg-red-100 text-red-700",
 };
 
-export function AdminUserDetailClient({ user }: { user: any }) {
+const inputCls = "w-full h-9 px-3 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-slate-400 focus:bg-white transition-colors";
+const selectCls = "w-full h-9 px-3 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-slate-400";
+
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <label className="block text-xs font-semibold text-slate-500 mb-1.5">{label}</label>
+      {children}
+    </div>
+  );
+}
+
+export function AdminUserDetailClient({ user, currentAdminId, mainAdminId }: { user: any; currentAdminId: string; mainAdminId: string }) {
   const router = useRouter();
+  const isMainAdmin = currentAdminId === mainAdminId;
+  const isViewingMainAdmin = user.id === mainAdminId;
   const [form, setForm] = useState({
     firstName: user.firstName,
     lastName: user.lastName,
+    username: user.username || "",
     email: user.email,
     phone: user.phone || "",
     country: user.country || "",
@@ -55,15 +70,6 @@ export function AdminUserDetailClient({ user }: { user: any }) {
     router.push("/admin/users");
   }
 
-  const Field = ({ label, children }: { label: string; children: React.ReactNode }) => (
-    <div>
-      <label className="block text-xs font-semibold text-slate-500 mb-1.5">{label}</label>
-      {children}
-    </div>
-  );
-
-  const inputCls = "w-full h-9 px-3 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-slate-400 focus:bg-white transition-colors";
-  const selectCls = "w-full h-9 px-3 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-slate-400";
 
   return (
     <main className="flex-1 p-6 space-y-6">
@@ -84,7 +90,7 @@ export function AdminUserDetailClient({ user }: { user: any }) {
             </div>
             <div className="flex items-center gap-2">
               {user.role === "admin" && (
-                <span className="text-xs font-bold px-2 py-1 rounded-md text-white bg-slate-900">ADMIN</span>
+                <span className="text-xs font-bold px-2 py-1 rounded-md text-white bg-black">ADMIN</span>
               )}
               <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${STATUS_CHIP[user.status] ?? "bg-slate-100 text-slate-600"}`}>{user.status}</span>
             </div>
@@ -100,6 +106,9 @@ export function AdminUserDetailClient({ user }: { user: any }) {
               </Field>
               <Field label="Email">
                 <input value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} type="email" className={inputCls} required />
+              </Field>
+              <Field label="Username">
+                <input value={form.username} onChange={(e) => setForm((f) => ({ ...f, username: e.target.value }))} className={inputCls} />
               </Field>
               <Field label="Phone">
                 <input value={form.phone} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))} className={inputCls} />
@@ -118,9 +127,10 @@ export function AdminUserDetailClient({ user }: { user: any }) {
                 </select>
               </Field>
               <Field label="Role">
-                <select value={form.role} onChange={(e) => setForm((f) => ({ ...f, role: e.target.value }))} className={selectCls}>
+                <select value={form.role} onChange={(e) => setForm((f) => ({ ...f, role: e.target.value }))} className={selectCls} disabled={!isMainAdmin && form.role !== "admin"}>
                   <option value="user">User</option>
-                  <option value="admin">Admin</option>
+                  {isMainAdmin && <option value="admin">Admin</option>}
+                  {!isMainAdmin && form.role === "admin" && <option value="admin">Admin</option>}
                 </select>
               </Field>
               <Field label="Email Verified">
@@ -136,12 +146,12 @@ export function AdminUserDetailClient({ user }: { user: any }) {
                 </select>
               </Field>
               <Field label="New Password (leave blank to keep)">
-                <input value={form.password} onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))} type="password" placeholder="••••••••" className={inputCls} />
+                <input value={form.password} onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))} type="password" placeholder="••••••••" autoComplete="new-password" className={inputCls} />
               </Field>
             </div>
 
             <div className="flex items-center gap-3 pt-2">
-              <button type="submit" disabled={saving} className="flex items-center gap-2 h-9 px-5 text-sm font-semibold text-white rounded-lg bg-slate-900 hover:bg-slate-800 disabled:opacity-50 transition-colors">
+              <button type="submit" disabled={saving} className="flex items-center gap-2 h-9 px-5 text-sm font-semibold text-white rounded-lg bg-black hover:bg-zinc-900 disabled:opacity-50 transition-colors">
                 <Save className="h-4 w-4" /> {saving ? "Saving..." : "Save Changes"}
               </button>
               {saveMsg && <span className={`text-sm ${saveMsg.includes("success") ? "text-emerald-600" : "text-red-600"}`}>{saveMsg}</span>}
@@ -175,8 +185,8 @@ export function AdminUserDetailClient({ user }: { user: any }) {
             </div>
           </div>
 
-          {/* Danger Zone */}
-          <div className="bg-white rounded-2xl border border-red-100 p-5">
+          {/* Danger Zone — hidden for the main admin account */}
+          {!isViewingMainAdmin && <div className="bg-white rounded-2xl border border-red-100 p-5">
             <h3 className="text-sm font-semibold text-red-700 mb-3">Danger Zone</h3>
             {!confirmDelete ? (
               <button onClick={() => setConfirmDelete(true)} className="flex items-center gap-2 text-sm font-medium text-red-600 hover:text-red-700 transition-colors">
@@ -193,7 +203,7 @@ export function AdminUserDetailClient({ user }: { user: any }) {
                 </div>
               </div>
             )}
-          </div>
+          </div>}
         </div>
       </div>
 

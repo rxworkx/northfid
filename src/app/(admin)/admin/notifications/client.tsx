@@ -65,6 +65,7 @@ export function AdminNotificationsClient({ rows, total, page, pages, users }: Pr
   const [showCompose, setShowCompose] = useState(false);
   const [sending, setSending] = useState(false);
   const [result, setResult] = useState<string | null>(null);
+  const [resultError, setResultError] = useState(false);
   const [userSearch, setUserSearch] = useState("");
   const [deleting, setDeleting] = useState<string | null>(null);
 
@@ -127,17 +128,26 @@ export function AdminNotificationsClient({ rows, total, page, pages, users }: Pr
     setSending(false);
 
     if (!res.ok) {
-      setResult("Failed to send");
+      setResult(data.error ?? "Failed to send");
+      setResultError(true);
       return;
     }
 
     const parts: string[] = [];
-    if (data.emailsSent != null) parts.push(`${data.emailsSent} email${data.emailsSent !== 1 ? "s" : ""}`);
-    if (data.notificationsSent != null) parts.push(`${data.notificationsSent} in-app notification${data.notificationsSent !== 1 ? "s" : ""}`);
-    setResult(`Sent: ${parts.join(" + ")}`);
-    setShowCompose(false);
-    setForm({ recipient: "user", userId: "", customEmail: "", type: "announcement", title: "", body: "", href: "", delivery: "email" });
-    setUserSearch("");
+    if (data.emailsSent != null && data.emailsSent > 0) parts.push(`${data.emailsSent} email${data.emailsSent !== 1 ? "s" : ""}`);
+    if (data.notificationsSent != null && data.notificationsSent > 0) parts.push(`${data.notificationsSent} in-app notification${data.notificationsSent !== 1 ? "s" : ""}`);
+
+    const hasFailed = (data.emailsFailed ?? 0) > 0;
+    if (hasFailed) {
+      setResult(`${data.emailsFailed} email${data.emailsFailed !== 1 ? "s" : ""} failed to send`);
+      setResultError(true);
+    } else {
+      setResult(parts.length > 0 ? `Sent: ${parts.join(" + ")}` : "Sent");
+      setResultError(false);
+      setShowCompose(false);
+      setForm({ recipient: "user", userId: "", customEmail: "", type: "announcement", title: "", body: "", href: "", delivery: "email" });
+      setUserSearch("");
+    }
     router.refresh();
   }
 
@@ -152,7 +162,7 @@ export function AdminNotificationsClient({ rows, total, page, pages, users }: Pr
   return (
     <main className="flex-1 p-6 space-y-5">
       {result && (
-        <div className="text-sm text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-lg px-4 py-3">{result}</div>
+        <div className={`text-sm rounded-lg px-4 py-3 ${resultError ? "text-red-700 bg-red-50 border border-red-200" : "text-emerald-700 bg-emerald-50 border border-emerald-200"}`}>{result}</div>
       )}
 
       {/* Toolbar */}

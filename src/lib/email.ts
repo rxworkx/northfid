@@ -34,13 +34,17 @@ function baseTemplate(title: string, body: string) {
         <!-- ── LOGO ── -->
         <tr>
           <td align="center" style="padding-bottom:36px">
-            <a href="${APP_URL}" style="text-decoration:none;display:inline-block">
-              <img
-                src="${logoUrl}"
-                alt="${APP_NAME}"
-                width="140"
-                style="height:auto;display:block;border:0;max-width:140px"
-              />
+            <a href="${APP_URL}" style="text-decoration:none">
+              <table cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto">
+                <tr>
+                  <td valign="middle" style="padding-right:10px">
+                    <img src="${logoUrl}" alt="" width="32" height="32" style="display:block;border:0;border-radius:6px" />
+                  </td>
+                  <td valign="middle">
+                    <span style="font-size:20px;font-weight:700;color:#ffffff;letter-spacing:-0.3px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif">${APP_NAME}</span>
+                  </td>
+                </tr>
+              </table>
             </a>
           </td>
         </tr>

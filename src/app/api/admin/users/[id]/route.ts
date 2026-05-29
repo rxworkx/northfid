@@ -31,11 +31,20 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 
   const { id } = await params;
   const body = await req.json();
-  const { firstName, lastName, email, phone, country, status, role, emailVerified, password, walletBalance, mustResetPassword } = body;
+  const { firstName, lastName, username, email, phone, country, status, role, emailVerified, password, walletBalance, mustResetPassword } = body;
+
+  // Only the main admin (first admin by createdAt) can set role=admin
+  if (role === "admin") {
+    const mainAdmin = await db.user.findFirst({ where: { role: "admin" }, orderBy: { createdAt: "asc" }, select: { id: true } });
+    if (mainAdmin?.id !== session.user!.id) {
+      return NextResponse.json({ error: "Only the main admin can assign admin roles" }, { status: 403 });
+    }
+  }
 
   const updateData: any = {};
   if (firstName !== undefined) updateData.firstName = firstName;
   if (lastName !== undefined) updateData.lastName = lastName;
+  if (username !== undefined) updateData.username = username || null;
   if (email !== undefined) updateData.email = email;
   if (phone !== undefined) updateData.phone = phone || null;
   if (country !== undefined) updateData.country = country;
@@ -68,6 +77,12 @@ export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id:
   if (!session) return unauthorized();
 
   const { id } = await params;
+
+  const mainAdmin = await db.user.findFirst({ where: { role: "admin" }, orderBy: { createdAt: "asc" }, select: { id: true } });
+  if (mainAdmin?.id === id) {
+    return NextResponse.json({ error: "The main admin account cannot be deleted" }, { status: 403 });
+  }
+
   await db.user.delete({ where: { id } });
   return NextResponse.json({ ok: true });
 }
