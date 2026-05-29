@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Pencil, Trash2, ToggleLeft, ToggleRight, CreditCard, Bitcoin } from "lucide-react";
+import { Plus, Pencil, Trash2, ToggleLeft, ToggleRight, CreditCard, Bitcoin, Wallet } from "lucide-react";
 
 interface PM {
   id: string; title: string; type: string; symbol: string | null; currency: string;
@@ -73,8 +73,8 @@ export function AdminPaymentMethodsClient({ methods }: { methods: PM[] }) {
           <div key={m.id} className="bg-white rounded-2xl border border-slate-200 p-5 hover:border-orange-200 hover:shadow-sm transition-all">
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-center gap-3">
-                <div className={`h-10 w-10 rounded-xl flex items-center justify-center ${m.type === "crypto" ? "bg-amber-100" : "bg-blue-100"}`}>
-                  {m.type === "crypto" ? <Bitcoin className="h-5 w-5 text-amber-600" /> : <CreditCard className="h-5 w-5 text-blue-600" />}
+                <div className={`h-10 w-10 rounded-xl flex items-center justify-center ${m.type === "crypto" ? "bg-amber-100" : m.type === "balance" ? "bg-emerald-100" : "bg-blue-100"}`}>
+                  {m.type === "crypto" ? <Bitcoin className="h-5 w-5 text-amber-600" /> : m.type === "balance" ? <Wallet className="h-5 w-5 text-emerald-600" /> : <CreditCard className="h-5 w-5 text-blue-600" />}
                 </div>
                 <div>
                   <p className="font-semibold text-slate-800">{m.title}</p>
@@ -124,6 +124,7 @@ export function AdminPaymentMethodsClient({ methods }: { methods: PM[] }) {
                   <select value={form.type} onChange={(e) => setForm((f: any) => ({ ...f, type: e.target.value }))} className={inputCls}>
                     <option value="crypto">Crypto</option>
                     <option value="bank_transfer">Bank Transfer</option>
+                    <option value="balance">Fund from Balance</option>
                   </select>
                 </div>
                 <div>

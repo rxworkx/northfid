@@ -36,7 +36,7 @@ export default async function TransactionsPage({ searchParams }: { searchParams:
   return (
     <div className="max-w-4xl space-y-6">
       {/* Summary pills */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         {filterTypes.map((type) => {
           const cfg = typeConfig[type as keyof typeof typeConfig];
           const stat = summary.find((s) => s.type === type);

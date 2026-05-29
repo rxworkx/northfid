@@ -12,6 +12,9 @@ if (existsSync(".env.production")) {
 // DATABASE_URL is the transaction pooler — used by the app at runtime
 export default defineConfig({
   schema: "prisma/schema.prisma",
+  migrations: {
+    seed: "npx tsx prisma/seed.ts",
+  },
   datasource: {
     url: process.env.DIRECT_URL ?? process.env.DATABASE_URL ?? "",
   },

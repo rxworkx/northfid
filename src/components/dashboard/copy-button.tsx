@@ -3,22 +3,33 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "@/components/ui/toaster";
-import { UserPlus, UserMinus } from "lucide-react";
 
-export function CopyButton({ traderId, userId, isCopied: initial }: { traderId: string; userId: string; isCopied: boolean }) {
+interface CopyButtonProps {
+  copyTraderId: string;
+  isCopied: boolean;
+  compact?: boolean;
+}
+
+export function CopyButton({ copyTraderId, isCopied: initial, compact = false }: CopyButtonProps) {
   const router = useRouter();
   const [copied, setCopied] = useState(initial);
   const [loading, setLoading] = useState(false);
 
-  async function toggle() {
+  async function toggle(e: React.MouseEvent) {
+    e.preventDefault();
+    e.stopPropagation();
     setLoading(true);
     try {
       const res = await fetch("/api/copy-trading/toggle", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ traderId, action: copied ? "remove" : "add" }),
+        body: JSON.stringify({ copyTraderId, action: copied ? "remove" : "add" }),
       });
-      if (!res.ok) throw new Error();
+      if (!res.ok) {
+        const d = await res.json();
+        toast.error(d.error ?? "Action failed");
+        return;
+      }
       setCopied((p) => !p);
       toast.success(copied ? "Stopped copying trader" : "Now copying this trader");
       router.refresh();
@@ -29,18 +40,47 @@ export function CopyButton({ traderId, userId, isCopied: initial }: { traderId: 
     }
   }
 
+  if (compact) {
+    return (
+      <button
+        onClick={toggle}
+        disabled={loading}
+        className={`h-8 px-3 rounded-lg text-xs font-semibold border transition-colors disabled:opacity-50 ${
+          copied
+            ? "bg-red-50 border-red-200 text-red-500 hover:bg-red-100"
+            : "bg-black border-black text-white hover:bg-zinc-900"
+        }`}
+      >
+        {loading ? "..." : copied ? "×" : "Copy"}
+      </button>
+    );
+  }
+
+  if (copied) {
+    return (
+      <div className="flex items-center gap-2">
+        <span className="flex-1 text-xs font-semibold text-emerald-600 bg-emerald-50 border border-emerald-200 rounded-xl px-3 py-2 text-center">
+          ✓ Copying
+        </span>
+        <button
+          onClick={toggle}
+          disabled={loading}
+          title="Stop copying"
+          className="h-9 px-4 flex items-center justify-center rounded-xl bg-red-50 border border-red-200 text-red-500 hover:bg-red-100 disabled:opacity-50 transition-colors text-sm font-semibold shrink-0"
+        >
+          {loading ? "..." : "Stop"}
+        </button>
+      </div>
+    );
+  }
+
   return (
     <button
       onClick={toggle}
-      disabled={loading || userId === traderId}
-      className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all cursor-default disabled:opacity-60 disabled:cursor-not-allowed ${
-        copied
-          ? "bg-red-50 text-red-600 border border-red-200 hover:bg-red-100"
-          : "bg-black text-white hover:bg-neutral-900 shadow-sm"
-      }`}
+      disabled={loading}
+      className="w-full flex items-center justify-center px-4 py-2 rounded-xl text-sm font-semibold bg-black text-white hover:bg-zinc-900 disabled:opacity-50 transition-colors"
     >
-      {copied ? <UserMinus className="h-4 w-4" /> : <UserPlus className="h-4 w-4" />}
-      {loading ? "Loading..." : copied ? "Stop Copying" : "Copy This Trader"}
+      {loading ? "Loading..." : "Copy Trader"}
     </button>
   );
 }

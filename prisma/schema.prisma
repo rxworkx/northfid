@@ -29,6 +29,7 @@ model User {
   status           String   @default("active") // active | suspended | banned
   isCopyTrader          Boolean   @default(false)
   mustResetPassword     Boolean   @default(false)
+  allowFundFromBalance  Boolean   @default(true)
   passwordResetToken    String?   @unique
   passwordResetExpiry   DateTime?
   createdAt             DateTime  @default(now())
@@ -39,7 +40,6 @@ model User {
   transactions    Transaction[]
   trades          Trade[]
   copyRelations   CopyRelation[] @relation("CopierUser")
-  copierRelations CopyRelation[] @relation("CopiedTraderUser")
   wallet          Wallet?
   copyTrader      CopyTrader?
   kyc             Kyc?
@@ -85,8 +85,9 @@ model CopyTrader {
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
 
-  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
-  trades Trade[]
+  user         User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
+  trades       Trade[]
+  copyRelations CopyRelation[]
 
   @@map("copy_traders")
 }
@@ -97,8 +98,8 @@ model CopyRelation {
   copiedTraderId String
   createdAt      DateTime @default(now())
 
-  copier       User @relation("CopierUser", fields: [copierId], references: [id], onDelete: Cascade)
-  copiedTrader User @relation("CopiedTraderUser", fields: [copiedTraderId], references: [id], onDelete: Cascade)
+  copier       User       @relation("CopierUser", fields: [copierId], references: [id], onDelete: Cascade)
+  copiedTrader CopyTrader @relation(fields: [copiedTraderId], references: [id], onDelete: Cascade)
 
   @@unique([copierId, copiedTraderId])
   @@map("copy_relations")
@@ -315,8 +316,9 @@ model Settings {
   maximumWithdrawal  Float    @default(50000)
   referralCommission Float    @default(5)
   siteName           String   @default("Pipnova")
-  maintenanceMode    Boolean  @default(false)
-  updatedAt          DateTime @updatedAt
+  maintenanceMode       Boolean  @default(false)
+  allowFundFromBalance  Boolean  @default(true)
+  updatedAt             DateTime @updatedAt
 
   @@map("settings")
 }

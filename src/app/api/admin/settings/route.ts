@@ -18,7 +18,7 @@ export async function PATCH(req: NextRequest) {
   if (!session) return unauthorized();
 
   const body = await req.json();
-  const { minimumDeposit, maximumDeposit, minimumWithdrawal, maximumWithdrawal, referralCommission, siteName, maintenanceMode } = body;
+  const { minimumDeposit, maximumDeposit, minimumWithdrawal, maximumWithdrawal, referralCommission, siteName, maintenanceMode, allowFundFromBalance } = body;
 
   const data: any = {};
   if (minimumDeposit !== undefined) data.minimumDeposit = parseFloat(minimumDeposit);
@@ -28,6 +28,7 @@ export async function PATCH(req: NextRequest) {
   if (referralCommission !== undefined) data.referralCommission = parseFloat(referralCommission);
   if (siteName !== undefined) data.siteName = siteName;
   if (maintenanceMode !== undefined) data.maintenanceMode = maintenanceMode;
+  if (allowFundFromBalance !== undefined) data.allowFundFromBalance = allowFundFromBalance;
 
   const settings = await db.settings.upsert({
     where: { id: "singleton" },

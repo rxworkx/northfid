@@ -16,24 +16,17 @@ export default async function MyExpertTradersPage() {
     include: {
       copiedTrader: {
         select: {
-          id: true,
-          copyTrader: {
-            select: {
-              id: true, userId: true,
-              firstName: true, lastName: true, avatar: true,
-              profitRate30d: true, profitRate7d: true, profitRate90d: true,
-              copiersCount: true, accountInstruments: true, cumulativePnl: true,
-            },
-          },
+          id: true, userId: true,
+          firstName: true, lastName: true, avatar: true,
+          profitRate30d: true, profitRate7d: true, profitRate90d: true,
+          copiersCount: true, accountInstruments: true, cumulativePnl: true,
         },
       },
     },
     orderBy: { createdAt: "desc" },
   });
 
-  const traders = relations
-    .map((r) => r.copiedTrader.copyTrader)
-    .filter((ct): ct is NonNullable<typeof ct> => ct !== null);
+  const traders = relations.map((r) => r.copiedTrader);
 
   if (traders.length === 0) {
     return (
@@ -71,7 +64,6 @@ export default async function MyExpertTradersPage() {
           <CopyTraderCard
             key={ct.id}
             trader={{ ...ct, firstName: ct.firstName ?? "", lastName: ct.lastName ?? "", avatar: resolveStorageUrl(ct.avatar, "traders") }}
-            userId={userId}
             isCopied={true}
           />
         ))}

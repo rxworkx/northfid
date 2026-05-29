@@ -1,7 +1,14 @@
 ﻿import { PrismaClient } from "@prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
 import bcrypt from "bcryptjs";
+import { config as loadEnv } from "dotenv";
+import { existsSync } from "fs";
 
-const db = new PrismaClient();
+if (existsSync(".env.production")) loadEnv({ path: ".env.production", override: true });
+else loadEnv({ override: true });
+
+const adapter = new PrismaPg({ connectionString: process.env.DIRECT_URL ?? process.env.DATABASE_URL! });
+const db = new PrismaClient({ adapter });
 
 async function main() {
   console.log("Seeding database...");
@@ -17,6 +24,7 @@ async function main() {
       minimumWithdrawal: 50,
       maximumWithdrawal: 50000,
       referralCommission: 5,
+      allowFundFromBalance: true,
     },
   });
 
@@ -28,6 +36,7 @@ async function main() {
     { title: "Ethereum", type: "crypto", symbol: "ETH", currency: "USD", exchangeRate: 3200, walletAddress: "0x71C7656EC7ab88b098defB751B7401B5f6d8976F", forDeposit: true, forWithdrawal: true, livePriceEnabled: true, priceSymbol: "ethereum", orderIndex: 2 },
     { title: "USDT (TRC-20)", type: "crypto", symbol: "USDT", currency: "USD", exchangeRate: 1.0, walletAddress: "TQn9Y2khEsLJW1ChVWFMSMeRDow5KcbLSE", forDeposit: true, forWithdrawal: true, livePriceEnabled: false, priceSymbol: null, orderIndex: 3 },
     { title: "Bank Transfer", type: "bank_transfer", symbol: null, currency: "USD", exchangeRate: 1.0, bankName: "Chase Bank", accountName: "Pipnova Group AG", accountNumber: "1234567890", routingNumber: "021000021", forDeposit: true, forWithdrawal: true, livePriceEnabled: false, priceSymbol: null, orderIndex: 4 },
+    { title: "Fund from Balance", type: "balance", symbol: null, currency: "USD", exchangeRate: 1.0, forDeposit: true, forWithdrawal: false, livePriceEnabled: false, priceSymbol: null, orderIndex: 5 },
   ];
 
   for (const pm of pms) {

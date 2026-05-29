@@ -11,8 +11,8 @@ export default async function FundAccountPage() {
   const session = await auth();
   const userId = session!.user!.id!;
 
-  const [user, paymentMethods, settings] = await Promise.all([
-    db.user.findUnique({ where: { id: userId }, select: { wallet: { select: { balance: true } } } }),
+  const [user, allPaymentMethods, settings] = await Promise.all([
+    db.user.findUnique({ where: { id: userId }, select: { allowFundFromBalance: true, wallet: { select: { balance: true } } } }),
     db.paymentMethod.findMany({ where: { enabled: true, forDeposit: true }, orderBy: { orderIndex: "asc" } }),
     db.settings.findUnique({ where: { id: "singleton" } }),
   ]);
@@ -20,6 +20,12 @@ export default async function FundAccountPage() {
   const balance = (user as any)?.wallet?.balance ?? 0;
   const min = settings?.minimumDeposit ?? 100;
   const max = settings?.maximumDeposit ?? 100000;
+
+  // Filter out Fund from Balance if disabled site-wide or for this user
+  const fundFromBalanceAllowed = (settings?.allowFundFromBalance ?? true) && (user?.allowFundFromBalance ?? true);
+  const paymentMethods = fundFromBalanceAllowed
+    ? allPaymentMethods
+    : allPaymentMethods.filter((pm) => pm.type !== "balance");
 
   return (
     <div className="max-w-3xl space-y-6">
@@ -59,7 +65,7 @@ export default async function FundAccountPage() {
           {paymentMethods.length === 0 ? (
             <p className="text-sm text-slate-500 py-6 text-center">No deposit methods available. Please contact support.</p>
           ) : (
-            <DepositForm paymentMethods={paymentMethods} min={min} max={max} />
+            <DepositForm paymentMethods={paymentMethods} min={min} max={max} walletBalance={balance} />
           )}
         </CardContent>
       </Card>

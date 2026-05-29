@@ -438,14 +438,14 @@ export function KycVerification({
         </div>
       )}
 
-      <div className="rounded-xl border border-slate-100 bg-slate-50 p-5 space-y-3">
+      <div className="rounded-xl border border-slate-100 p-5 space-y-3">
         <p className="text-xs font-semibold uppercase tracking-wide text-slate-400 mb-1">Personal Information</p>
         <ReviewRow label="Full Name"     value={`${personal.firstName} ${personal.lastName}`} />
         <ReviewRow label="Date of Birth" value={personal.dateOfBirth} />
         <ReviewRow label="Nationality"   value={personal.nationality} />
       </div>
 
-      <div className="rounded-xl border border-slate-100 bg-slate-50 p-5 space-y-3">
+      <div className="rounded-xl border border-slate-100 p-5 space-y-3">
         <p className="text-xs font-semibold uppercase tracking-wide text-slate-400 mb-1">Residential Address</p>
         <ReviewRow label="Address"     value={[address.addressLine1, address.addressLine2].filter(Boolean).join(", ")} />
         <ReviewRow label="City"        value={address.city} />
@@ -454,7 +454,7 @@ export function KycVerification({
         <ReviewRow label="Country"     value={address.country} />
       </div>
 
-      <div className="rounded-xl border border-slate-100 bg-slate-50 p-5 space-y-3">
+      <div className="rounded-xl border border-slate-100 p-5 space-y-3">
         <p className="text-xs font-semibold uppercase tracking-wide text-slate-400 mb-1">Identity Document</p>
         <ReviewRow label="Type"        value={docTypeLabel} />
         <ReviewRow label="Number"      value={doc.docNumber} />

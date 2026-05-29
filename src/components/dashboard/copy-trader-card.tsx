@@ -21,11 +21,10 @@ interface Trader {
 
 interface CopyTraderCardProps {
   trader: Trader;
-  userId: string;
   isCopied: boolean;
 }
 
-export function CopyTraderCard({ trader, userId, isCopied }: CopyTraderCardProps) {
+export function CopyTraderCard({ trader, isCopied }: CopyTraderCardProps) {
   const dicebearUrl = `https://api.dicebear.com/8.x/initials/svg?seed=${encodeURIComponent(trader.firstName + " " + trader.lastName)}&backgroundColor=111111&textColor=ffffff`;
   const [imgSrc, setImgSrc] = useState(trader.avatar ?? dicebearUrl);
 
@@ -58,8 +57,8 @@ export function CopyTraderCard({ trader, userId, isCopied }: CopyTraderCardProps
               <span>{trader.copiersCount.toLocaleString()} copiers</span>
             </div>
           </div>
-          <div className={`shrink-0 rounded-lg px-2.5 py-1 text-xs font-bold ${profit30dPositive ? "bg-emerald-50 text-emerald-700" : "bg-red-50 text-red-600"}`}>
-            {profit30dPositive ? "+" : ""}{trader.profitRate30d.toFixed(1)}%
+          <div className="shrink-0" onClick={(e) => e.preventDefault()}>
+            <CopyButton copyTraderId={trader.id} isCopied={isCopied} compact />
           </div>
         </div>
 
@@ -81,11 +80,6 @@ export function CopyTraderCard({ trader, userId, isCopied }: CopyTraderCardProps
         </div>
       </Link>
 
-      {trader.userId && (
-        <div className="px-4 pb-4">
-          <CopyButton traderId={trader.userId} userId={userId} isCopied={isCopied} />
-        </div>
-      )}
     </div>
   );
 }

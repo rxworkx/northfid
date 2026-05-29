@@ -13,6 +13,7 @@ interface Settings {
   referralCommission: number;
   siteName: string;
   maintenanceMode: boolean;
+  allowFundFromBalance: boolean;
 }
 
 
@@ -26,6 +27,7 @@ export function AdminSettingsClient({ settings }: { settings: Settings }) {
     referralCommission: String(settings.referralCommission),
     siteName: settings.siteName,
     maintenanceMode: settings.maintenanceMode,
+    allowFundFromBalance: settings.allowFundFromBalance,
   });
   const [saving, setSaving] = useState(false);
   const [saveMsg, setSaveMsg] = useState("");
@@ -65,7 +67,7 @@ export function AdminSettingsClient({ settings }: { settings: Settings }) {
               <label className="block text-xs font-semibold text-slate-600 mb-1.5">Site Name</label>
               <input value={form.siteName} onChange={(e) => setForm((f) => ({ ...f, siteName: e.target.value }))} className={inputCls} />
             </div>
-            <div className="flex items-center gap-3 pt-5">
+            <div className="flex flex-col gap-4 pt-5">
               <label className="flex items-center gap-3 cursor-pointer">
                 <div className="relative">
                   <input type="checkbox" checked={form.maintenanceMode} onChange={(e) => setForm((f) => ({ ...f, maintenanceMode: e.target.checked }))} className="sr-only" />
@@ -75,6 +77,17 @@ export function AdminSettingsClient({ settings }: { settings: Settings }) {
                 <div>
                   <p className="text-sm font-medium text-slate-700">Maintenance Mode</p>
                   <p className="text-xs text-slate-500">Disables user access to the platform</p>
+                </div>
+              </label>
+              <label className="flex items-center gap-3 cursor-pointer">
+                <div className="relative">
+                  <input type="checkbox" checked={form.allowFundFromBalance} onChange={(e) => setForm((f) => ({ ...f, allowFundFromBalance: e.target.checked }))} className="sr-only" />
+                  <div className={`w-10 h-6 rounded-full transition-colors ${form.allowFundFromBalance ? "bg-emerald-500" : "bg-slate-200"}`} />
+                  <div className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full shadow transition-transform ${form.allowFundFromBalance ? "translate-x-4" : ""}`} />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-slate-700">Fund from Balance</p>
+                  <p className="text-xs text-slate-500">Allow users to deposit using their wallet balance</p>
                 </div>
               </label>
             </div>

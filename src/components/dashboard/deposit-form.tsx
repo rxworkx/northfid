@@ -28,9 +28,10 @@ interface DepositFormProps {
   paymentMethods: PaymentMethod[];
   min: number;
   max: number;
+  walletBalance: number;
 }
 
-export function DepositForm({ paymentMethods, min, max }: DepositFormProps) {
+export function DepositForm({ paymentMethods, min, max, walletBalance }: DepositFormProps) {
   const router = useRouter();
   const [selectedPm, setSelectedPm] = useState(paymentMethods[0]);
 
@@ -101,7 +102,7 @@ export function DepositForm({ paymentMethods, min, max }: DepositFormProps) {
       </div>
 
       {/* Payment instructions */}
-      {selectedPm && (
+      {selectedPm && selectedPm.type !== "balance" && (
         <div className="rounded-xl bg-slate-50 border border-slate-200 p-4 space-y-2">
           <p className="text-sm font-semibold text-slate-800">Payment Instructions</p>
           {selectedPm.type === "crypto" ? (
@@ -121,6 +122,14 @@ export function DepositForm({ paymentMethods, min, max }: DepositFormProps) {
               <p className="text-slate-500">Submit the form after making your transfer. Use your username as reference.</p>
             </div>
           )}
+        </div>
+      )}
+
+      {selectedPm?.type === "balance" && (
+        <div className="rounded-xl bg-emerald-50 border border-emerald-200 p-4 space-y-1">
+          <p className="text-sm font-semibold text-emerald-800">Fund from Balance</p>
+          <p className="text-xs text-emerald-700">Available balance: <strong>{formatCurrency(walletBalance)}</strong></p>
+          <p className="text-xs text-emerald-600">The amount will be deducted from your balance.</p>
         </div>
       )}
 

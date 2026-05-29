@@ -27,11 +27,9 @@ export default async function TraderProfilePage({ params }: { params: Promise<{ 
 
   if (!ct) notFound();
 
-  const isCopied = ct.userId
-    ? !!(await db.copyRelation.findUnique({
-        where: { copierId_copiedTraderId: { copierId: userId, copiedTraderId: ct.userId } },
-      }))
-    : false;
+  const isCopied = !!(await db.copyRelation.findUnique({
+    where: { copierId_copiedTraderId: { copierId: userId, copiedTraderId: ct.id } },
+  }));
 
   const firstName = ct.firstName ?? "";
   const lastName = ct.lastName ?? "";
@@ -65,11 +63,9 @@ export default async function TraderProfilePage({ params }: { params: Promise<{ 
               <h1 className="text-2xl font-bold text-slate-900">{firstName} {lastName}</h1>
               {ct.country && <p className="text-sm text-slate-500 mt-0.5">{ct.country}</p>}
               {ct.bio && <p className="text-sm text-slate-700 mt-3 leading-relaxed">{ct.bio}</p>}
-              {ct.userId && (
-                <div className="mt-4">
-                  <CopyButton traderId={ct.userId} userId={userId} isCopied={isCopied} />
-                </div>
-              )}
+              <div className="mt-4">
+                <CopyButton copyTraderId={ct.id} isCopied={isCopied} />
+              </div>
             </div>
           </div>
         </CardContent>
@@ -78,9 +74,9 @@ export default async function TraderProfilePage({ params }: { params: Promise<{ 
       <Card>
         <CardHeader><CardTitle>Performance Statistics</CardTitle></CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {stats.map((s) => (
-              <div key={s.label} className="rounded-xl bg-slate-50 border border-slate-100 p-4">
+              <div key={s.label} className="rounded-xl border border-slate-100 p-4">
                 <div className="flex items-center gap-2 mb-2">{s.icon}<span className="text-xs text-slate-500">{s.label}</span></div>
                 <p className={`text-lg font-bold ${s.label.includes("Drawdown") ? "text-amber-600" : s.positive ? "text-emerald-700" : "text-red-600"}`}>{s.value}</p>
               </div>

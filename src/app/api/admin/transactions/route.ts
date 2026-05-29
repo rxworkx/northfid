@@ -70,12 +70,22 @@ export async function POST(req: NextRequest) {
     },
   });
 
-  // If confirmed deposit, update wallet
-  if (type === "deposit" && (status === "confirmed" || !status)) {
+  const resolvedStatus = status || "confirmed";
+
+  // If confirmed deposit, credit wallet
+  if (type === "deposit" && resolvedStatus === "confirmed") {
     await db.wallet.upsert({
       where: { userId },
       update: { balance: { increment: parseFloat(amount) } },
       create: { userId, balance: parseFloat(amount) },
+    });
+  }
+
+  // If confirmed withdrawal, deduct wallet
+  if (type === "withdrawal" && resolvedStatus === "confirmed") {
+    await db.wallet.update({
+      where: { userId },
+      data: { balance: { decrement: parseFloat(amount) } },
     });
   }
 

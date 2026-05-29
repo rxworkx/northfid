@@ -108,8 +108,7 @@ export default async function ExpertTradersPage({ searchParams }: { searchParams
             <CopyTraderCard
               key={t.id}
               trader={{ ...t, firstName: t.firstName ?? "", lastName: t.lastName ?? "", avatar: resolveStorageUrl(t.avatar, "traders") }}
-              userId={userId}
-              isCopied={t.userId ? copiedSet.has(t.userId) : false}
+              isCopied={copiedSet.has(t.id)}
             />
           ))}
         </div>

@@ -2,6 +2,17 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { getAdminSession, unauthorized } from "../../_auth";
 
+async function adjustBalance(userId: string, delta: number) {
+  const wallet = await db.wallet.findUnique({ where: { userId } });
+  if (!wallet) {
+    console.error(`[tx-confirm] wallet not found for userId=${userId}`);
+    return;
+  }
+  const newBalance = wallet.balance + delta;
+  await db.wallet.update({ where: { userId }, data: { balance: newBalance } });
+  console.log(`[tx-confirm] wallet ${userId}: ${wallet.balance} → ${newBalance} (delta ${delta})`);
+}
+
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await getAdminSession();
   if (!session) return unauthorized();
@@ -12,29 +23,44 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   const tx = await db.transaction.findUnique({ where: { id } });
   if (!tx) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
+  console.log(`[tx-confirm] id=${id} type=${tx.type} ${tx.status} → ${status} amount=${tx.amount}`);
+
   await db.transaction.update({
     where: { id },
-    data: {
-      status,
-      confirmedAt: status === "confirmed" ? new Date() : tx.confirmedAt,
-    },
+    data: { status, confirmedAt: status === "confirmed" ? new Date() : tx.confirmedAt },
   });
 
-  // Update wallet on deposit confirm
-  if (tx.type === "deposit" && status === "confirmed" && tx.status !== "confirmed") {
-    await db.wallet.upsert({
-      where: { userId: tx.userId },
-      update: { balance: { increment: tx.amount } },
-      create: { userId: tx.userId, balance: tx.amount },
-    });
-  }
+  const isBalanceDeposit = tx.type === "deposit" && tx.paymentMethodType === "balance";
 
-  // Reverse wallet on deposit fail
-  if (tx.type === "deposit" && status === "failed" && tx.status === "confirmed") {
-    await db.wallet.update({
-      where: { userId: tx.userId },
-      data: { balance: { decrement: tx.amount } },
-    });
+  try {
+    if (tx.type === "deposit" && !isBalanceDeposit && status === "confirmed" && tx.status !== "confirmed") {
+      const wallet = await db.wallet.findUnique({ where: { userId: tx.userId } });
+      if (wallet) {
+        await db.wallet.update({ where: { userId: tx.userId }, data: { balance: wallet.balance + tx.amount } });
+        console.log(`[tx-confirm] deposit +${tx.amount} → new balance ${wallet.balance + tx.amount}`);
+      } else {
+        await db.wallet.create({ data: { userId: tx.userId, balance: tx.amount } });
+        console.log(`[tx-confirm] deposit: created wallet with ${tx.amount}`);
+      }
+    }
+
+    if (tx.type === "deposit" && !isBalanceDeposit && status === "failed" && tx.status === "confirmed") {
+      await adjustBalance(tx.userId, -tx.amount);
+    }
+
+    if (isBalanceDeposit && status === "failed" && tx.status !== "failed") {
+      await adjustBalance(tx.userId, tx.amount);
+    }
+
+    if (tx.type === "withdrawal" && status === "confirmed" && tx.status !== "confirmed") {
+      await adjustBalance(tx.userId, -tx.amount);
+    }
+
+    if (tx.type === "withdrawal" && status === "failed" && tx.status === "confirmed") {
+      await adjustBalance(tx.userId, tx.amount);
+    }
+  } catch (e) {
+    console.error("[tx-confirm] wallet update failed:", e);
   }
 
   return NextResponse.json({ ok: true });

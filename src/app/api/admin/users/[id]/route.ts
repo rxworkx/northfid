@@ -31,7 +31,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 
   const { id } = await params;
   const body = await req.json();
-  const { firstName, lastName, username, email, phone, country, status, role, emailVerified, password, walletBalance, mustResetPassword } = body;
+  const { firstName, lastName, username, email, phone, country, status, role, emailVerified, password, walletBalance, mustResetPassword, allowFundFromBalance } = body;
 
   // Only the main admin (first admin by createdAt) can set role=admin
   if (role === "admin") {
@@ -52,6 +52,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   if (role !== undefined) updateData.role = role;
   if (emailVerified !== undefined) updateData.emailVerified = emailVerified;
   if (mustResetPassword !== undefined) updateData.mustResetPassword = mustResetPassword;
+  if (allowFundFromBalance !== undefined) updateData.allowFundFromBalance = allowFundFromBalance;
   if (password) {
     updateData.password = await bcrypt.hash(password, 12);
     updateData.mustResetPassword = false;

@@ -42,6 +42,7 @@ export function AdminUserDetailClient({ user, currentAdminId, mainAdminId }: { u
     role: user.role,
     emailVerified: user.emailVerified,
     mustResetPassword: user.mustResetPassword ?? false,
+    allowFundFromBalance: user.allowFundFromBalance ?? true,
     walletBalance: user.wallet?.balance?.toString() ?? "0",
     password: "",
   });
@@ -143,6 +144,12 @@ export function AdminUserDetailClient({ user, currentAdminId, mainAdminId }: { u
                 <select value={form.mustResetPassword ? "true" : "false"} onChange={(e) => setForm((f) => ({ ...f, mustResetPassword: e.target.value === "true" }))} className={selectCls}>
                   <option value="false">Not required</option>
                   <option value="true">Required on next login</option>
+                </select>
+              </Field>
+              <Field label="Fund from Balance">
+                <select value={form.allowFundFromBalance ? "true" : "false"} onChange={(e) => setForm((f) => ({ ...f, allowFundFromBalance: e.target.value === "true" }))} className={selectCls}>
+                  <option value="true">Allowed</option>
+                  <option value="false">Disabled for this user</option>
                 </select>
               </Field>
               <Field label="New Password (leave blank to keep)">
