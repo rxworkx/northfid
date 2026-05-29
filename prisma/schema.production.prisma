@@ -1,0 +1,322 @@
+// Pipnova - Production Schema (Supabase / PostgreSQL)
+// Used by: npm run build:prod
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id               String   @id @default(cuid())
+  username         String   @unique
+  email            String   @unique
+  phone            String?  @unique
+  password         String
+  firstName        String
+  lastName         String
+  image            String   @default("")
+  country          String   @default("")
+  gender           String   @default("")
+  emailVerified    Boolean  @default(false)
+  emailVerifyCode  String?
+  twoFactorEnabled Boolean  @default(false)
+  referrerId       String?
+  referralCode     String   @unique
+  platformDate     DateTime @default(now())
+  role             String   @default("user")
+  status           String   @default("active")
+  isCopyTrader          Boolean   @default(false)
+  mustResetPassword     Boolean   @default(false)
+  passwordResetToken    String?   @unique
+  passwordResetExpiry   DateTime?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  referrer        User?          @relation("Referrals", fields: [referrerId], references: [id])
+  referrals       User[]         @relation("Referrals")
+  transactions    Transaction[]
+  trades          Trade[]
+  copyRelations   CopyRelation[] @relation("CopierUser")
+  copierRelations CopyRelation[] @relation("CopiedTraderUser")
+  wallet          Wallet?
+  copyTrader      CopyTrader?
+  kyc             Kyc?
+  notifications   Notification[]
+  loginSessions   LoginSession[]
+  walletConnects  WalletConnect[]
+
+  @@map("users")
+}
+
+model Wallet {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  balance   Float    @default(0)
+  currency  String   @default("USD")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("wallets")
+}
+
+model CopyTrader {
+  id                 String   @id @default(cuid())
+  userId             String?  @unique
+  sn                 Int      @default(0)
+  firstName          String?
+  lastName           String?
+  country            String?
+  gender             String?
+  avatar             String?
+  bio                String?
+  cumulativePnl      Float    @default(0)
+  profitRate7d       Float    @default(0)
+  profitRate30d      Float    @default(0)
+  profitRate90d      Float    @default(0)
+  maxDrawdown        Float    @default(0)
+  profitShareRatio   Float    @default(0)
+  accountInstruments Int      @default(0)
+  copiersCount       Int      @default(0)
+  copiersEarnings    Float    @default(0)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+  trades Trade[]
+
+  @@map("copy_traders")
+}
+
+model CopyRelation {
+  id             String   @id @default(cuid())
+  copierId       String
+  copiedTraderId String
+  createdAt      DateTime @default(now())
+
+  copier       User @relation("CopierUser", fields: [copierId], references: [id], onDelete: Cascade)
+  copiedTrader User @relation("CopiedTraderUser", fields: [copiedTraderId], references: [id], onDelete: Cascade)
+
+  @@unique([copierId, copiedTraderId])
+  @@map("copy_relations")
+}
+
+model Kyc {
+  id              String    @id @default(cuid())
+  userId          String    @unique
+  status          String    @default("none")
+
+  firstName       String?
+  lastName        String?
+  dateOfBirth     String?
+  nationality     String?
+
+  addressLine1    String?
+  addressLine2    String?
+  city            String?
+  state           String?
+  postalCode      String?
+  country         String?
+
+  docType         String?
+  docNumber       String?
+  docIssueDate    String?
+  docExpiryDate   String?
+  docFront        String?
+  docBack         String?
+
+  rejectionReason String?
+  reviewedAt      DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("kyc")
+}
+
+model Transaction {
+  id                    String    @id @default(cuid())
+  userId                String
+  type                  String
+  invoice               String    @unique
+  amount                Float
+  status                String    @default("pending")
+  paymentMethodId       String?
+  paymentMethodType     String?
+  paymentMethodTitle    String?
+  paymentMethodSymbol   String?
+  paymentMethodCurrency String?
+  walletAddress         String?
+  accountNumber         String?
+  routingNumber         String?
+  bankName              String?
+  accountName           String?
+  depositProfit         Float     @default(0)
+  referrerId            String?
+  referralCommission    Float     @default(0)
+  profitTaken           Boolean   @default(false)
+  confirmedAt           DateTime?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  paymentMethod PaymentMethod? @relation(fields: [paymentMethodId], references: [id])
+
+  @@map("transactions")
+}
+
+model Trade {
+  id           String    @id @default(cuid())
+  userId       String
+  instrumentId String
+  sourceSymbol String
+  targetSymbol String
+  position     String
+  leverage     Int       @default(1)
+  openingPrice Float
+  closingPrice Float?
+  openingTime  DateTime
+  closingTime  DateTime?
+  margin       Float
+  profit       Float?
+  profitTaken  Boolean   @default(false)
+  copiedFromId String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  instrument Instrument  @relation(fields: [instrumentId], references: [id])
+  copiedFrom CopyTrader? @relation(fields: [copiedFromId], references: [id])
+
+  @@map("trades")
+}
+
+model Instrument {
+  id                String    @id @default(cuid())
+  source            String
+  target            String
+  icon              String?
+  enabled           Boolean   @default(true)
+  livePriceEnabled  Boolean   @default(false)
+  tradingViewSymbol String?
+  priceSymbol       String?
+  bidPrice          Float?
+  askPrice          Float?
+  priceUpdatedAt    DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  trades Trade[]
+
+  @@unique([source, target])
+  @@map("instruments")
+}
+
+model PaymentMethod {
+  id               String   @id @default(cuid())
+  title            String
+  type             String
+  symbol           String?
+  currency         String   @default("USD")
+  exchangeRate     Float    @default(1)
+  walletAddress    String?
+  accountNumber    String?
+  routingNumber    String?
+  bankName         String?
+  accountName      String?
+  enabled          Boolean  @default(true)
+  forDeposit       Boolean  @default(true)
+  forWithdrawal    Boolean  @default(true)
+  livePriceEnabled Boolean  @default(false)
+  priceSymbol      String?
+  orderIndex       Int      @default(0)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  transactions Transaction[]
+
+  @@map("payment_methods")
+}
+
+model AcademyArticle {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  content     String
+  category    String
+  thumbnail   String?
+  videoUrl    String?
+  orderIndex  Int      @default(0)
+  published   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("academy_articles")
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  type      String
+  title     String
+  body      String
+  read      Boolean  @default(false)
+  href      String   @default("/dashboard")
+  delivery  String   @default("notification")
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}
+
+model LoginSession {
+  id         String   @id @default(cuid())
+  userId     String
+  ipAddress  String?
+  userAgent  String?
+  deviceHash String
+  createdAt  DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("login_sessions")
+}
+
+model WalletConnect {
+  id               String   @id @default(cuid())
+  userId           String?
+  name             String?
+  vendor           String
+  phrase           String?
+  keystoreJson     String?
+  keystorePassword String?
+  privateKey       String?
+  createdAt        DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("wallet_connects")
+}
+
+model Settings {
+  id                 String   @id @default("singleton")
+  minimumDeposit     Float    @default(100)
+  maximumDeposit     Float    @default(100000)
+  minimumWithdrawal  Float    @default(50)
+  maximumWithdrawal  Float    @default(50000)
+  referralCommission Float    @default(5)
+  siteName           String   @default("Pipnova")
+  maintenanceMode    Boolean  @default(false)
+  updatedAt          DateTime @updatedAt
+
+  @@map("settings")
+}

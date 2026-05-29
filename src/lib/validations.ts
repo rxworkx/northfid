@@ -39,10 +39,7 @@ export const profileSchema = z.object({
   lastName: z.string().min(2, "Last name required"),
   email: z.string().email("Invalid email"),
   phone: z.string().optional(),
-  about: z.string().max(500, "Bio must be under 500 characters").optional(),
-  dateOfBirth: z.string().optional(),
   country: z.string().optional(),
-  state: z.string().optional(),
   gender: z.string().optional(),
 });
 
