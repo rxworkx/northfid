@@ -19,8 +19,40 @@ location ^~ /uploads/ {
     add_header X-Content-Type-Options "nosniff" always;
 }
 
+# Hestia's "location /" has a nested rule that sends any path ending in a file
+# extension, such as .css or .png, to its empty public_html folder, and nginx
+# prefers that nested rule over the regular expression below. ^~ is what beats it.
+location ^~ /_next/ {
+    proxy_pass http://127.0.0.1:3100;
+    proxy_http_version 1.1;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+}
+location ^~ /media/ {
+    proxy_pass http://127.0.0.1:3100;
+    proxy_http_version 1.1;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+}
+location ^~ /wallets/ {
+    proxy_pass http://127.0.0.1:3100;
+    proxy_http_version 1.1;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+}
+location = /favicon.ico {
+    proxy_pass http://127.0.0.1:3100;
+    proxy_http_version 1.1;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+}
+
 # A regular expression location is what takes priority over the "location /"
-# in Hestia's template, which would otherwise send requests to Apache.
+# in Hestia's template, which would otherwise send page requests to Apache.
 location ~ ^/ {
     client_max_body_size 20m;
     proxy_pass http://127.0.0.1:3100;
