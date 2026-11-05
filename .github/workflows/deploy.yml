@@ -1,0 +1,63 @@
+name: Deploy
+
+# If this repo is public, these logs are public too. Don't print server details
+# or settings in any step.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# One at a time, and never cancel a deploy halfway through.
+concurrency:
+  group: production-deploy
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      # Inlined into the bundle by next build.
+      NEXT_PUBLIC_APP_URL: https://northfid.com
+      NEXT_PUBLIC_APP_NAME: Northfid
+      NEXT_TELEMETRY_DISABLED: 1
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - run: npm ci
+      - run: npm run build
+
+      - name: Package the release
+        run: |
+          tar -czf release.tgz \
+            --exclude=.next/cache --exclude=.next/trace --exclude=.next/dev \
+            .next public prisma/schema.prisma prisma/seed.ts prisma.config.ts \
+            next.config.ts tsconfig.json package.json package-lock.json
+
+      # Off until the server is set up. See deploy/README.md.
+      - name: Deploy to server
+        if: vars.DEPLOY_ENABLED == 'true' && github.ref == 'refs/heads/main'
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+          VPS_KNOWN_HOSTS: ${{ secrets.VPS_KNOWN_HOSTS }}
+        run: |
+          umask 077
+          mkdir -p ~/.ssh
+          printf '%s\n' "$VPS_SSH_KEY" > ~/.ssh/deploy_key
+          printf '%s\n' "$VPS_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          # This key can only run the server's deploy script.
+          ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes -o BatchMode=yes \
+            -o StrictHostKeyChecking=yes -o ServerAliveInterval=30 \
+            "root@$VPS_HOST" "deploy $GITHUB_SHA" < release.tgz
+
+      - name: Check the live site
+        if: vars.DEPLOY_ENABLED == 'true' && github.ref == 'refs/heads/main'
+        run: curl -fsS --retry 5 --retry-delay 5 --retry-all-errors -o /dev/null https://northfid.com/login

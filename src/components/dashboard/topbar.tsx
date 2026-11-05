@@ -100,8 +100,8 @@ export function DashboardTopbar({ user }: { user: TopbarUser }) {
     <header className="sticky top-0 z-20 h-16 flex items-center justify-between px-4 sm:px-6 lg:px-8 bg-black lg:bg-white/95 lg:backdrop-blur-sm border-b border-white/10 lg:border-slate-200">
       {/* Mobile: logo */}
       <div className="flex lg:hidden items-center gap-2.5">
-        <Image src="/media/logo3.png" alt="Pipnova" width={26} height={26} className="shrink-0" />
-        <span className="text-base font-bold text-white">Pipnova</span>
+        <Image src="/media/logo3.png" alt="Northfid" width={26} height={26} className="shrink-0" />
+        <span className="text-base font-bold text-white">Northfid</span>
       </div>
 
       {/* Desktop: page title + badges */}

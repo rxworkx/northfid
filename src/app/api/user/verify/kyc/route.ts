@@ -1,17 +1,13 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
-import { extname } from "path";
-import { uploadFile } from "@/lib/storage";
+import { detectImageType, saveKycFile, type ImageType } from "@/lib/storage";
 
-const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
 const MAX_SIZE = 8 * 1024 * 1024;
 
-async function saveFile(file: File, userId: string, label: string): Promise<string> {
-  const ext = extname(file.name) || ".jpg";
-  const filename = `kyc_${userId}_${label}_${Date.now()}${ext}`;
-  const buffer = Buffer.from(await file.arrayBuffer());
-  await uploadFile("uploads", `kyc/${filename}`, buffer, file.type);
+async function saveFile(buffer: Buffer, type: ImageType, userId: string, label: string): Promise<string> {
+  const filename = `kyc_${userId}_${label}_${Date.now()}${type.ext}`;
+  await saveKycFile(filename, buffer);
   return filename;
 }
 
@@ -46,14 +42,18 @@ export async function POST(req: Request) {
   if (!docFrontFile) return NextResponse.json({ error: "Front of ID is required" }, { status: 400 });
   if (docType !== "passport" && !docBackFile) return NextResponse.json({ error: "Back of ID is required" }, { status: 400 });
 
-  for (const [label, file] of [["docFront", docFrontFile], ["docBack", docBackFile]] as [string, File | null][]) {
+  const uploads: Partial<Record<"docFront" | "docBack", { buffer: Buffer; type: ImageType }>> = {};
+  for (const [label, file] of [["docFront", docFrontFile], ["docBack", docBackFile]] as ["docFront" | "docBack", File | null][]) {
     if (!file) continue;
-    if (!ALLOWED_TYPES.includes(file.type)) return NextResponse.json({ error: `${label}: only JPEG/PNG/WEBP allowed` }, { status: 400 });
     if (file.size > MAX_SIZE) return NextResponse.json({ error: `${label}: max 8 MB` }, { status: 400 });
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const type = detectImageType(buffer);
+    if (!type) return NextResponse.json({ error: `${label}: only JPEG/PNG/WEBP allowed` }, { status: 400 });
+    uploads[label] = { buffer, type };
   }
 
-  const docFront = await saveFile(docFrontFile!, userId, "front");
-  const docBack  = docBackFile ? await saveFile(docBackFile, userId, "back") : null;
+  const docFront = await saveFile(uploads.docFront!.buffer, uploads.docFront!.type, userId, "front");
+  const docBack  = uploads.docBack ? await saveFile(uploads.docBack.buffer, uploads.docBack.type, userId, "back") : null;
 
   await db.kyc.upsert({
     where: { userId },

@@ -70,8 +70,8 @@ export function DashboardSidebar({ user }: { user: SidebarUser }) {
     <div className="flex h-full flex-col">
       {/* Logo */}
       <div className="flex items-center gap-2.5 px-5 h-16 border-b border-white/8 shrink-0">
-        <Image src="/media/logo3.png" alt="Pipnova" width={28} height={28} className="shrink-0" />
-        <span className="text-base font-bold text-white">Pipnova</span>
+        <Image src="/media/logo3.png" alt="Northfid" width={28} height={28} className="shrink-0" />
+        <span className="text-base font-bold text-white">Northfid</span>
       </div>
 
       {/* User card */}

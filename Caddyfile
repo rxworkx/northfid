@@ -1,0 +1,25 @@
+{$DOMAIN} {
+	encode zstd gzip
+
+	# Identity documents are only available through the app's permission check.
+	handle /uploads/kyc/* {
+		respond 404
+	}
+
+	# Next.js only serves public/ files that existed when the server started,
+	# so uploads made while it is running are served directly from the volume.
+	handle /uploads/* {
+		# Uploaded files are untrusted: a sandboxed response cannot run scripts
+		# on this domain even if someone uploads an HTML or SVG file.
+		header {
+			Content-Security-Policy "default-src 'none'; style-src 'unsafe-inline'; sandbox"
+			X-Content-Type-Options "nosniff"
+		}
+		root * /srv
+		file_server
+	}
+
+	handle {
+		reverse_proxy app:3000
+	}
+}

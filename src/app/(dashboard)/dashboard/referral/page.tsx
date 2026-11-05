@@ -25,7 +25,7 @@ export default async function ReferralPage() {
 
   const howItWorks = [
     { step: "01", title: "Share your link", desc: "Copy your unique referral link and share it with friends, on social media, or in trading communities." },
-    { step: "02", title: "They register", desc: "Your friend signs up using your link. They get access to all Pipnova features immediately." },
+    { step: "02", title: "They register", desc: "Your friend signs up using your link. They get access to all Northfid features immediately." },
     { step: "03", title: "They deposit", desc: "When they make their first confirmed deposit, the commission is automatically credited to your balance." },
   ];
 
@@ -41,7 +41,7 @@ export default async function ReferralPage() {
           </div>
           <h1 className="text-2xl font-bold mb-2">Earn 5% on every friend's deposit</h1>
           <p className="text-sm text-white/50 leading-relaxed max-w-md">
-            Invite friends to Pipnova and earn a 5% commission on every confirmed deposit they make. No limits, paid instantly.
+            Invite friends to Northfid and earn a 5% commission on every confirmed deposit they make. No limits, paid instantly.
           </p>
         </div>
       </div>

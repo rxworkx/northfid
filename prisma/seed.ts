@@ -1,5 +1,5 @@
 ﻿import { PrismaClient } from "@prisma/client";
-import { PrismaPg } from "@prisma/adapter-pg";
+import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
 import bcrypt from "bcryptjs";
 import { config as loadEnv } from "dotenv";
 import { existsSync } from "fs";
@@ -7,7 +7,7 @@ import { existsSync } from "fs";
 if (existsSync(".env.production")) loadEnv({ path: ".env.production", override: true });
 else loadEnv({ override: true });
 
-const adapter = new PrismaPg({ connectionString: process.env.DIRECT_URL ?? process.env.DATABASE_URL! });
+const adapter = new PrismaBetterSqlite3({ url: process.env.DATABASE_URL ?? "file:./prisma/dev.db" });
 const db = new PrismaClient({ adapter });
 
 async function main() {
@@ -35,7 +35,7 @@ async function main() {
     { title: "Bitcoin", type: "crypto", symbol: "BTC", currency: "USD", exchangeRate: 65000, walletAddress: "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh", forDeposit: true, forWithdrawal: true, livePriceEnabled: true, priceSymbol: "bitcoin", orderIndex: 1 },
     { title: "Ethereum", type: "crypto", symbol: "ETH", currency: "USD", exchangeRate: 3200, walletAddress: "0x71C7656EC7ab88b098defB751B7401B5f6d8976F", forDeposit: true, forWithdrawal: true, livePriceEnabled: true, priceSymbol: "ethereum", orderIndex: 2 },
     { title: "USDT (TRC-20)", type: "crypto", symbol: "USDT", currency: "USD", exchangeRate: 1.0, walletAddress: "TQn9Y2khEsLJW1ChVWFMSMeRDow5KcbLSE", forDeposit: true, forWithdrawal: true, livePriceEnabled: false, priceSymbol: null, orderIndex: 3 },
-    { title: "Bank Transfer", type: "bank_transfer", symbol: null, currency: "USD", exchangeRate: 1.0, bankName: "Chase Bank", accountName: "Pipnova Group AG", accountNumber: "1234567890", routingNumber: "021000021", forDeposit: true, forWithdrawal: true, livePriceEnabled: false, priceSymbol: null, orderIndex: 4 },
+    { title: "Bank Transfer", type: "bank_transfer", symbol: null, currency: "USD", exchangeRate: 1.0, bankName: "Chase Bank", accountName: "Northfid Group AG", accountNumber: "1234567890", routingNumber: "021000021", forDeposit: true, forWithdrawal: true, livePriceEnabled: false, priceSymbol: null, orderIndex: 4 },
     { title: "Fund from Balance", type: "balance", symbol: null, currency: "USD", exchangeRate: 1.0, forDeposit: true, forWithdrawal: false, livePriceEnabled: false, priceSymbol: null, orderIndex: 5 },
   ];
 
@@ -71,41 +71,52 @@ async function main() {
     });
   }
 
-  // Demo user
-  const hashedPass = await bcrypt.hash("12345678", 12);
-  await db.user.upsert({
-    where: { email: "demo@example.com" },
-    update: { username: "demo", password: hashedPass },
-    create: {
-      username: "demo",
-      email: "demo@example.com",
-      password: hashedPass,
-      firstName: "Demo",
-      lastName: "User",
-      country: "United States",
-      referralCode: "DEMO0001",
-      emailVerified: true,
-    },
-  });
+  // This file is in the repo, so production must never get its default password
+  // or the demo account. Set SEED_ADMIN_EMAIL and SEED_ADMIN_PASSWORD to seed it.
+  const isProduction = process.env.NODE_ENV === "production";
+  const adminEmail = process.env.SEED_ADMIN_EMAIL ?? "admin@example.com";
+  const adminPassword = process.env.SEED_ADMIN_PASSWORD ?? "12345678";
+  if (isProduction && (!process.env.SEED_ADMIN_EMAIL || !process.env.SEED_ADMIN_PASSWORD || adminPassword.length < 12)) {
+    throw new Error("In production, set SEED_ADMIN_EMAIL and a SEED_ADMIN_PASSWORD of at least 12 characters.");
+  }
 
-  // Demo user wallet
-  const demoUser = await db.user.findUnique({ where: { email: "demo@example.com" }, select: { id: true } });
-  if (demoUser) {
-    await db.wallet.upsert({
-      where: { userId: demoUser.id },
-      update: {},
-      create: { userId: demoUser.id, balance: 5000 },
+  // Demo user
+  if (!isProduction) {
+    const hashedPass = await bcrypt.hash("12345678", 12);
+    await db.user.upsert({
+      where: { email: "demo@example.com" },
+      update: { username: "demo", password: hashedPass },
+      create: {
+        username: "demo",
+        email: "demo@example.com",
+        password: hashedPass,
+        firstName: "Demo",
+        lastName: "User",
+        country: "United States",
+        referralCode: "DEMO0001",
+        emailVerified: true,
+      },
     });
+
+    // Demo user wallet
+    const demoUser = await db.user.findUnique({ where: { email: "demo@example.com" }, select: { id: true } });
+    if (demoUser) {
+      await db.wallet.upsert({
+        where: { userId: demoUser.id },
+        update: {},
+        create: { userId: demoUser.id, balance: 5000 },
+      });
+    }
   }
 
   // Admin account
-  const adminPass = await bcrypt.hash("12345678", 12);
+  const adminPass = await bcrypt.hash(adminPassword, 12);
   await db.user.upsert({
-    where: { email: "admin@example.com" },
+    where: { email: adminEmail },
     update: { username: "admin", password: adminPass },
     create: {
       username: "admin",
-      email: "admin@example.com",
+      email: adminEmail,
       password: adminPass,
       firstName: "Admin",
       lastName: "User",
@@ -519,8 +530,8 @@ async function main() {
   }
 
   console.log("Seed complete.");
-  console.log("Admin login: admin@example.com / 12345678");
-  console.log("Demo login:  demo@example.com  / 12345678  (username: demo)");
+  console.log(`Admin login: ${adminEmail}`);
+  if (!isProduction) console.log("Demo login:  demo@example.com  / 12345678  (username: demo)");
 }
 
 main()

@@ -7,9 +7,9 @@ import { SessionProvider } from "@/components/providers/session-provider";
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
-  title: { default: "Pipnova | Modern Trading Platform", template: "%s | Pipnova" },
+  title: { default: "Northfid | Modern Trading Platform", template: "%s | Northfid" },
   description:
-    "Invest in 1000+ assets, copy expert traders, and grow your portfolio with Pipnova – trusted by thousands of investors worldwide.",
+    "Invest in 1000+ assets, copy expert traders, and grow your portfolio with Northfid – trusted by thousands of investors worldwide.",
   keywords: ["trading", "copy trading", "investment", "forex", "crypto", "stocks"],
 };
 

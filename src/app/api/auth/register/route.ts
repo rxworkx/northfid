@@ -57,7 +57,7 @@ export async function POST(req: Request) {
       data: {
         userId: newUser.id,
         type: "welcome",
-        title: "Welcome to Pipnova!",
+        title: "Welcome to Northfid!",
         body: "Your account is ready. Fund your wallet and start copy trading.",
         href: "/dashboard/fund-account",
       },

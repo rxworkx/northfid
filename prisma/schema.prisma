@@ -1,11 +1,11 @@
-// Pipnova - Prisma Schema
+// Northfid - Prisma Schema
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
 }
 
 model User {
@@ -315,7 +315,7 @@ model Settings {
   minimumWithdrawal  Float    @default(50)
   maximumWithdrawal  Float    @default(50000)
   referralCommission Float    @default(5)
-  siteName           String   @default("Pipnova")
+  siteName           String   @default("Northfid")
   maintenanceMode       Boolean  @default(false)
   allowFundFromBalance  Boolean  @default(true)
   updatedAt             DateTime @updatedAt

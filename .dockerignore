@@ -1,0 +1,23 @@
+.git
+.next
+node_modules
+.vscode
+.claude
+.env*
+*.tsbuildinfo
+next-env.d.ts
+npm-debug.log*
+README.md
+
+# Local data must never be baked into an image
+prisma/*.db
+prisma/*.db-*
+prisma/migration-output.sql
+private-uploads
+public/uploads/kyc
+public/uploads/users
+
+Dockerfile
+docker-compose*.yml
+Caddyfile
+env.example

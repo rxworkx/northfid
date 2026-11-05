@@ -114,7 +114,7 @@ export default async function DashboardPage() {
         <div className="flex items-center justify-between mb-5">
           <div>
             <h2 className="text-lg font-bold text-slate-900">Highest Profit Rate</h2>
-            <p className="text-sm text-slate-500 mt-0.5">The best-performing traders on Pipnova this month</p>
+            <p className="text-sm text-slate-500 mt-0.5">The best-performing traders on Northfid this month</p>
           </div>
           <Link href="/dashboard/expert-traders" className="inline-flex items-center gap-1 text-sm font-medium text-orange-500 hover:text-orange-600 transition-colors">
             See all <ArrowRight className="h-4 w-4" />
@@ -189,7 +189,7 @@ export default async function DashboardPage() {
           <div className="inline-flex items-center gap-2 rounded-full border border-orange-500/30 bg-orange-500/10 px-3 py-1 text-xs font-semibold text-orange-400 mb-4">
             <BookOpen className="h-3.5 w-3.5" /> Free Education
           </div>
-          <h3 className="text-xl font-bold mb-2">Sharpen your edge with the Pipnova Academy</h3>
+          <h3 className="text-xl font-bold mb-2">Sharpen your edge with the Northfid Academy</h3>
           <p className="text-sm text-white/60 mb-5 leading-relaxed">
             From beginner basics to advanced technical analysis, free courses written for real traders, not textbooks.
           </p>

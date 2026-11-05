@@ -69,7 +69,7 @@ function RegisterForm() {
     <div className="w-full max-w-sm lg:mt-10">
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-white">Create your account</h1>
-        <p className="mt-2 text-sm text-slate-500">Join 50,000+ traders on Pipnova, it&apos;s free</p>
+        <p className="mt-2 text-sm text-slate-500">Join 50,000+ traders on Northfid, it&apos;s free</p>
       </div>
 
       {serverError && (

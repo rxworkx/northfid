@@ -8,14 +8,13 @@ if (existsSync(".env.production")) {
   loadEnv();
 }
 
-// DIRECT_URL bypasses the pooler — required for migrations/db push
-// DATABASE_URL is the transaction pooler — used by the app at runtime
+// DATABASE_URL points at the local SQLite file (e.g. file:./prisma/dev.db)
 export default defineConfig({
   schema: "prisma/schema.prisma",
   migrations: {
     seed: "npx tsx prisma/seed.ts",
   },
   datasource: {
-    url: process.env.DIRECT_URL ?? process.env.DATABASE_URL ?? "",
+    url: process.env.DATABASE_URL ?? "file:./prisma/dev.db",
   },
 });

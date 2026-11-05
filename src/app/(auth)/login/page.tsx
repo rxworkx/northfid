@@ -81,7 +81,7 @@ function LoginForm() {
     <div className="w-full max-w-sm">
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-white">Welcome back</h1>
-        <p className="mt-2 text-sm text-slate-500">Sign in to your Pipnova account</p>
+        <p className="mt-2 text-sm text-slate-500">Sign in to your Northfid account</p>
       </div>
 
       {registered && (

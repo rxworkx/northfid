@@ -71,7 +71,7 @@ export default function ForgotPasswordPage() {
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-white">Reset your password</h1>
         <p className="mt-2 text-sm text-slate-500">
-          Enter the email address linked to your Pipnova account and we&apos;ll send you a reset link.
+          Enter the email address linked to your Northfid account and we&apos;ll send you a reset link.
         </p>
       </div>
 

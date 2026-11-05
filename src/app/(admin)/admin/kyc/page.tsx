@@ -1,6 +1,5 @@
 import { AdminTopbar } from "@/components/admin/topbar";
 import { db } from "@/lib/db";
-import { resolveStorageUrl } from "@/lib/storage";
 import { AdminKycClient } from "./client";
 
 interface PageProps {
@@ -44,7 +43,7 @@ export default async function AdminKycPage({ searchParams }: PageProps) {
     <>
       <AdminTopbar title="KYC Verification" subtitle="Review identity submissions" />
       <AdminKycClient
-        kycs={kycs.map((k) => ({ ...k, docFront: resolveStorageUrl(k.docFront, "kyc"), docBack: resolveStorageUrl(k.docBack, "kyc") })) as any}
+        kycs={kycs.map((k) => ({ ...k, docFront: k.docFront ? `/api/kyc-documents/${k.id}/front` : null, docBack: k.docBack ? `/api/kyc-documents/${k.id}/back` : null })) as any}
         total={total} page={page} pages={Math.ceil(total / limit)} currentStatus={status} search={search}
         counts={{ pending: counts[0], approved: counts[1], rejected: counts[2] }} />
     </>

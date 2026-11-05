@@ -6,8 +6,8 @@ function getResend() {
   return _resend;
 }
 
-const FROM = process.env.EMAIL_FROM ?? "Pipnova <noreply@pipnova.com>";
-const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME ?? "Pipnova";
+const FROM = process.env.EMAIL_FROM ?? "Northfid <noreply@northfid.com>";
+const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME ?? "Northfid";
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
 
 function baseTemplate(title: string, body: string) {

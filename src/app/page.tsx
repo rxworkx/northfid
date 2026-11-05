@@ -87,7 +87,7 @@ export default async function HomePage() {
             <div className="hidden lg:block absolute right-0 w-[46%] pointer-events-none" style={{ top: "-8%", bottom: "-8%" }}>
               <Image
                 src="/media/hero.webp"
-                alt="Pipnova trading platform"
+                alt="Northfid trading platform"
                 fill
                 className="object-contain object-center"
                 style={{ transform: "scale(1.12)", transformOrigin: "center center" }}
@@ -121,7 +121,7 @@ export default async function HomePage() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {[
-              { Icon: Trophy, title: "Industry Awards", desc: "Pipnova platform holds multiple industry awards as the best trading platform." },
+              { Icon: Trophy, title: "Industry Awards", desc: "Northfid platform holds multiple industry awards as the best trading platform." },
               { Icon: BarChart3, title: "1000+ Assets", desc: "Commodities, Stocks, Futures, Indices and a lot more to choose from." },
               { Icon: Users, title: "Demo Account", desc: "Register and get access to the demo account with $10,000 test funds." },
               { Icon: Headphones, title: "24/5 Support", desc: "Dedicated customer support is ready to help you whenever you need." },
@@ -147,7 +147,7 @@ export default async function HomePage() {
               Invest in what you want,<br className="hidden sm:block" /> we provide the options you need
             </h2>
             <p className="mt-3 text-slate-500 text-sm max-w-2xl mx-auto">
-              Enjoy a diverse variety of trading assets at Pipnova with more than 1000 trading assets available
+              Enjoy a diverse variety of trading assets at Northfid with more than 1000 trading assets available
             </p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -193,7 +193,7 @@ export default async function HomePage() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {[
-              { title: "La copia de operaciones de Pipnova.â€¦", text: "La copia de operaciones de Traders Tribe es una de las funciones mÃ¡s sencillas y rentables de ..", name: "Javier R", date: "Feb 02, 2023", init: "J" },
+              { title: "La copia de operaciones de Northfid.â€¦", text: "La copia de operaciones de Traders Tribe es una de las funciones mÃ¡s sencillas y rentables de ..", name: "Javier R", date: "Feb 02, 2023", init: "J" },
               { title: "piattaforma di trading perfetta", text: "piattaforma di trading perfetta, e sopratutto il servizio di consulenza e di supporto ..", name: "Simone Liberanome", date: "March 09, 2023", init: "S" },
               { title: "Esther", text: "Esther, amabilidad, paciencia, educaciÃ³n. Una buena experiencia con el equipo de soporte.", name: "Thomas", date: "March 11, 2023", init: "T" },
               { title: "Ho avuto un ottima esperien", text: "Ho avuto un ottima esperienza con Nino che mi ha supportato per la verifica del mio pro ...", name: "Kelvin Napoli", date: "April 19, 2023", init: "K" },
@@ -258,7 +258,7 @@ export default async function HomePage() {
         <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-10">
           <div className="text-center mb-14">
             <p className="text-xs font-bold tracking-[0.22em] uppercase text-slate-500 mb-4">Copy Trading</p>
-            <h2 className="text-3xl sm:text-4xl font-bold text-white">Meet Copy Trading with Pipnova</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold text-white">Meet Copy Trading with Northfid</h2>
             <p className="mt-3 text-slate-400">Benefit from the wisdom of the community</p>
           </div>
           <div className="grid md:grid-cols-2 gap-5 mb-16">
@@ -328,19 +328,19 @@ export default async function HomePage() {
           <div className="grid md:grid-cols-2 gap-5 max-w-3xl mx-auto">
             {[
               {
-                name: "Pipnova Mobile",
-                desc: "Enjoy Pipnova trading experience with our responsive and adaptive mobile features",
+                name: "Northfid Mobile",
+                desc: "Enjoy Northfid trading experience with our responsive and adaptive mobile features",
                 features: ["iOS & Android", "Real-time charts", "Push notifications", "Biometric login"],
               },
               {
-                name: "Pipnova Web",
+                name: "Northfid Web",
                 desc: "Trade from your desktops, iPads and Mac PC with the full suite of professional tools.",
                 features: ["Advanced charting", "One-click trading", "Full account control", "Multi-screen"],
               },
             ].map((p) => (
               <div key={p.name} className="group rounded-2xl border border-slate-200 bg-slate-50 p-7 hover:border-slate-300 hover:bg-white hover:shadow-sm transition-all duration-300">
                 <div className="flex items-center gap-4 mb-6">
-                  <Image src="/media/logo3.png" alt="Pipnova" width={52} height={52} className="shrink-0 rounded-xl" />
+                  <Image src="/media/logo3.png" alt="Northfid" width={52} height={52} className="shrink-0 rounded-xl" />
                   <div>
                     <h3 className="font-bold text-slate-900">{p.name}</h3>
                     <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">{p.desc}</p>
@@ -368,7 +368,7 @@ export default async function HomePage() {
               <p className="text-xs font-bold tracking-[0.22em] uppercase text-slate-400 mb-5">Regulation &amp; Trust</p>
               <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-5">Regulated, trusted<br />and transparent</h2>
               <p className="text-slate-500 text-sm leading-relaxed mb-8">
-                Pipnova Capital Ltd is authorised and regulated by the Financial Services Authority of Seychelles (FSA) under licence No. SD026. The Pipnova Group AG is publicly listed on the Frankfurt Stock Exchange. We operate with full transparency so you always know where your money is.
+                Northfid Capital Ltd is authorised and regulated by the Financial Services Authority of Seychelles (FSA) under licence No. SD026. The Northfid Group AG is publicly listed on the Frankfurt Stock Exchange. We operate with full transparency so you always know where your money is.
               </p>
               <div className="grid grid-cols-2 gap-4">
                 {[
@@ -410,18 +410,18 @@ export default async function HomePage() {
       <section className="bg-black py-10">
         <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-10">
           <div className="relative rounded-2xl overflow-hidden border border-white/6" style={{ height: "320px" }}>
-            <Image src="/media/bg.webp" alt="Pipnova Platform" fill className="object-cover" />
+            <Image src="/media/bg.webp" alt="Northfid Platform" fill className="object-cover" />
             <div className="absolute inset-0 bg-linear-to-t from-black/50 via-transparent to-transparent" />
           </div>
         </div>
       </section>
 
-      {/* â”€â”€ Why Pipnova â”€â”€ */}
+      {/* â”€â”€ Why Northfid â”€â”€ */}
       <section className="py-24 bg-[#0f0f0f]">
         <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-10">
           <div className="text-center mb-14">
             <p className="text-xs font-bold tracking-[0.22em] uppercase text-slate-500 mb-4">Built for Traders</p>
-            <h2 className="text-3xl sm:text-4xl font-bold text-white">Why traders choose Pipnova</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold text-white">Why traders choose Northfid</h2>
             <p className="mt-3 text-slate-400 text-sm max-w-xl mx-auto">Built for both beginners and seasoned professionals. Everything you need, nothing you don&apos;t.</p>
           </div>
           <div className="grid lg:grid-cols-3 gap-5">
@@ -490,7 +490,7 @@ export default async function HomePage() {
         <div className="mx-auto max-w-4xl px-6 sm:px-8 text-center">
           <p className="text-xs font-bold tracking-[0.22em] uppercase text-slate-500 mb-6">Get Started Today</p>
           <h2 className="text-4xl sm:text-5xl font-extrabold text-white leading-tight">Ready to start trading?</h2>
-          <p className="mt-4 text-slate-400">Join 50,000+ traders already growing their portfolios with Pipnova.</p>
+          <p className="mt-4 text-slate-400">Join 50,000+ traders already growing their portfolios with Northfid.</p>
           <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/register" className="inline-flex items-center justify-center gap-2 rounded-lg text-white font-semibold px-8 py-3.5 transition-opacity hover:opacity-90 shadow-lg" style={BTN}>
               Create Account <ChevronRight className="h-4 w-4" />
@@ -508,8 +508,8 @@ export default async function HomePage() {
         <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-10">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 mb-10 pb-8 border-b border-white/8">
             <Link href="/" className="flex items-center gap-3">
-              <Image src="/media/logo3.png" alt="Pipnova" width={48} height={48} />
-              <span className="text-2xl font-bold text-white">Pipnova</span>
+              <Image src="/media/logo3.png" alt="Northfid" width={48} height={48} />
+              <span className="text-2xl font-bold text-white">Northfid</span>
             </Link>
             <div className="flex flex-wrap gap-6 text-sm text-slate-500">
               {["Privacy Policy", "Terms of Service", "Risk Disclosure", "Contact"].map((item) => (
@@ -520,22 +520,22 @@ export default async function HomePage() {
           <div className="space-y-4 text-sm text-slate-600 leading-relaxed">
             <p className="font-semibold text-slate-300 text-base">Copyright Â© 2023 â€“ All rights reserved.</p>
             <p>
-              Pipnova is a trademark of The Pipnova Group AG, a German based FinTech company publicly listed on the Frankfurt Stock Exchange | WKN: A161NR | ISIN: DE000A161NR7.
+              Northfid is a trademark of The Northfid Group AG, a German based FinTech company publicly listed on the Frankfurt Stock Exchange | WKN: A161NR | ISIN: DE000A161NR7.
             </p>
             <p>
-              The website is owned by The Pipnova Group AG and operated by Pipnova Capital Ltd which is authorised and regulated by the Financial Services Authority Seychelles (FSA) under licence No. SD026. The registered address of CT House, Office 9A, 2nd Floor, Providence, Mahe, Seychelles.
+              The website is owned by The Northfid Group AG and operated by Northfid Capital Ltd which is authorised and regulated by the Financial Services Authority Seychelles (FSA) under licence No. SD026. The registered address of CT House, Office 9A, 2nd Floor, Providence, Mahe, Seychelles.
             </p>
             <p>Tel: ~+2482574498</p>
             <p>
-              The group also includes Pipnova Global (CY) Ltd, with registered address at Eurosure Tower, 3rd floor, 2112 Nicosia, Cyprus. Pipnova Global (CY) Ltd is wholly owned by The Pipnova Group AG.
+              The group also includes Northfid Global (CY) Ltd, with registered address at Eurosure Tower, 3rd floor, 2112 Nicosia, Cyprus. Northfid Global (CY) Ltd is wholly owned by The Northfid Group AG.
             </p>
             <p>
               <span className="text-slate-400 font-semibold">RISK WARNING: </span>
-              Derivatives are complex instruments and come with a high risk of losing money rapidly due to leverage. You should consider whether you understand how derivatives work and whether you can afford to take the high risk of losing your money. This is not investment advice. Trading with Pipnova Trader by following and/or copying or replicating the trades of other traders involves high levels of risks, even when following and/or copying or replicating the Lead Traders. Such risks include the risk that you may be following/copying the trading decisions of possibly inexperienced/unprofessional traders, or traders whose ultimate purpose or intention, or financial status may differ from yours. Before making an investment decision, you should rely on your own assessment of the person making the trading decisions and the terms of all the legal documentation.
+              Derivatives are complex instruments and come with a high risk of losing money rapidly due to leverage. You should consider whether you understand how derivatives work and whether you can afford to take the high risk of losing your money. This is not investment advice. Trading with Northfid Trader by following and/or copying or replicating the trades of other traders involves high levels of risks, even when following and/or copying or replicating the Lead Traders. Such risks include the risk that you may be following/copying the trading decisions of possibly inexperienced/unprofessional traders, or traders whose ultimate purpose or intention, or financial status may differ from yours. Before making an investment decision, you should rely on your own assessment of the person making the trading decisions and the terms of all the legal documentation.
             </p>
             <p>
               <span className="text-slate-400 font-semibold">Registered countries: </span>
-              Pipnova provides services for the residents of certain countries, such as Afghanistan, Albania, American Samoa, Anguilla, Australia, Austria, Barbados, Belarus, Belgium, Benin, Bermuda, British Indian Ocean Territory, Bulgaria, Burkina Faso, Canada, Cayman Islands, Central African Republic, China, Christmas Island, Cocos (Keeling) Islands, Congo, Congo, The Democratic Republic of the, Croatia, Cyprus, Czech Republic, Denmark, Estonia, Falkland Islands (Malvinas), Finland, France, Germany, Gibraltar, Greece, Guam, Haiti, Heard Island and McDonald Islands, Hungary, Iceland, Iran, Islamic Republic of, Ireland, Isle of Man, Israel, Italy, Jamaica, Japan, Jersey, Korea, Democratic People&apos;s Republic of, Latvia, Libyan Arab Jamahiriya, Liechtenstein, Lithuania, Luxembourg, Mali, Malta, Montserrat, Mozambique, Myanmar, Netherlands, New Zealand, Norfolk Island, Norway, Palestinian Territory, Occupied, Pitcairn, Poland, Portugal, Romania, Russian Federation, Saint Helena, Ascension and Tristan Da Cunha, San Marino, Senegal, Serbia, Slovakia, Slovenia, Somalia, South Georgia and the South Sandwich Islands, South Sudan, Spain, Sri Lanka, Sweden, Switzerland, Syrian Arab Republic, Trinidad and Tobago, Tunisia, Turks and Caicos Islands, Uganda, Ukraine, United Kingdom and any other countries where the citizens have British proof of identity (i.e. British Virgin Island, Gibraltar, Isle of Man etc.), United States, U.S. Minor Islands, Vanuatu, Virgin Islands, British, Virgin Islands, U.S., Yemen, and Zimbabwe.
+              Northfid provides services for the residents of certain countries, such as Afghanistan, Albania, American Samoa, Anguilla, Australia, Austria, Barbados, Belarus, Belgium, Benin, Bermuda, British Indian Ocean Territory, Bulgaria, Burkina Faso, Canada, Cayman Islands, Central African Republic, China, Christmas Island, Cocos (Keeling) Islands, Congo, Congo, The Democratic Republic of the, Croatia, Cyprus, Czech Republic, Denmark, Estonia, Falkland Islands (Malvinas), Finland, France, Germany, Gibraltar, Greece, Guam, Haiti, Heard Island and McDonald Islands, Hungary, Iceland, Iran, Islamic Republic of, Ireland, Isle of Man, Israel, Italy, Jamaica, Japan, Jersey, Korea, Democratic People&apos;s Republic of, Latvia, Libyan Arab Jamahiriya, Liechtenstein, Lithuania, Luxembourg, Mali, Malta, Montserrat, Mozambique, Myanmar, Netherlands, New Zealand, Norfolk Island, Norway, Palestinian Territory, Occupied, Pitcairn, Poland, Portugal, Romania, Russian Federation, Saint Helena, Ascension and Tristan Da Cunha, San Marino, Senegal, Serbia, Slovakia, Slovenia, Somalia, South Georgia and the South Sandwich Islands, South Sudan, Spain, Sri Lanka, Sweden, Switzerland, Syrian Arab Republic, Trinidad and Tobago, Tunisia, Turks and Caicos Islands, Uganda, Ukraine, United Kingdom and any other countries where the citizens have British proof of identity (i.e. British Virgin Island, Gibraltar, Isle of Man etc.), United States, U.S. Minor Islands, Vanuatu, Virgin Islands, British, Virgin Islands, U.S., Yemen, and Zimbabwe.
             </p>
           </div>
         </div>

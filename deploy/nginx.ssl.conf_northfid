@@ -1,0 +1,32 @@
+# Hestia includes this inside the northfid.com HTTPS server block, and keeps it
+# when it rebuilds the domain. Installed by setup-domain.sh.
+
+if ($host = www.northfid.com) {
+    return 301 https://northfid.com$request_uri;
+}
+
+# Identity documents are only available through the app's permission check.
+location ^~ /uploads/kyc/ {
+    return 404;
+}
+
+# Next.js only serves public/ files that existed when it started, so uploads
+# are served from disk. Uploaded files are untrusted: a sandboxed response
+# can't run scripts on this domain.
+location ^~ /uploads/ {
+    alias /var/lib/northfid/uploads/;
+    add_header Content-Security-Policy "default-src 'none'; style-src 'unsafe-inline'; sandbox" always;
+    add_header X-Content-Type-Options "nosniff" always;
+}
+
+# A regular expression location is what takes priority over the "location /"
+# in Hestia's template, which would otherwise send requests to Apache.
+location ~ ^/ {
+    client_max_body_size 20m;
+    proxy_pass http://127.0.0.1:3100;
+    proxy_http_version 1.1;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+}

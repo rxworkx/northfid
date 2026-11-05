@@ -20,13 +20,13 @@ export function Navbar() {
     <header className="fixed top-0 inset-x-0 z-50 bg-black/95 backdrop-blur-md border-b border-white/8">
       <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-10 flex h-20 items-center justify-between">
         <Link href="/" className="flex items-center gap-3">
-          <Image src="/media/logo3.png" alt="Pipnova" width={44} height={44} />
-          <span className="text-2xl font-bold text-white tracking-tight">Pipnova</span>
+          <Image src="/media/logo3.png" alt="Northfid" width={44} height={44} />
+          <span className="text-2xl font-bold text-white tracking-tight">Northfid</span>
         </Link>
 
         <div className="hidden lg:flex items-center">
           <a href="#" className="text-sm text-slate-400 hover:text-white border border-white/12 px-4 py-2 rounded-md transition-colors leading-tight text-center">
-            Member of Pipnova Group AG<br />
+            Member of Northfid Group AG<br />
             <span className="text-slate-300 font-medium">Publicly listed in Frankfurt</span>
           </a>
         </div>

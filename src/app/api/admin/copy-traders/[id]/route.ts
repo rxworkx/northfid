@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { getAdminSession, unauthorized } from "../../_auth";
-import { extname } from "path";
-import { uploadFile, deleteFile } from "@/lib/storage";
+import { detectImageType, uploadFile, deleteFile } from "@/lib/storage";
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await getAdminSession();
@@ -19,8 +18,11 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     if (!file) return NextResponse.json({ error: "No file" }, { status: 400 });
     if (file.size > 2 * 1024 * 1024) return NextResponse.json({ error: "Max 2MB" }, { status: 400 });
 
-    const ext = extname(file.name) || ".jpg";
-    const filename = `ct_${Date.now()}${ext}`;
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const type = detectImageType(buffer);
+    if (!type) return NextResponse.json({ error: "Only JPEG/PNG/WEBP allowed" }, { status: 400 });
+
+    const filename = `ct_${Date.now()}${type.ext}`;
     const path = `traders/${filename}`;
 
     const existing = await db.copyTrader.findUnique({ where: { id }, select: { avatar: true } });
@@ -28,8 +30,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
       await deleteFile("uploads", `traders/${existing.avatar}`).catch(() => {});
     }
 
-    const buffer = Buffer.from(await file.arrayBuffer());
-    await uploadFile("uploads", path, buffer, file.type);
+    await uploadFile("uploads", path, buffer, type.mime);
     await db.copyTrader.update({ where: { id }, data: { avatar: filename } });
     return NextResponse.json({ filename });
   }

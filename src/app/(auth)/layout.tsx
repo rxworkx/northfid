@@ -13,8 +13,8 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
 
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3 relative z-10">
-          <Image src="/media/logo3.png" alt="Pipnova" width={40} height={40} />
-          <span className="text-xl font-bold text-white tracking-tight">Pipnova</span>
+          <Image src="/media/logo3.png" alt="Northfid" width={40} height={40} />
+          <span className="text-xl font-bold text-white tracking-tight">Northfid</span>
         </Link>
 
         {/* Main copy */}
@@ -64,7 +64,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         <div className="flex items-center gap-3 border border-white/8 rounded-xl p-4 bg-white/2 relative z-10">
           <Image src="/media/frankfurt.webp" alt="Frankfurt Stock Exchange" width={52} height={46} className="shrink-0 object-contain" />
           <div>
-            <p className="text-xs font-semibold text-white leading-snug">Member of Pipnova Group AG</p>
+            <p className="text-xs font-semibold text-white leading-snug">Member of Northfid Group AG</p>
             <p className="text-xs text-slate-500 mt-0.5">Publicly listed on Frankfurt Stock Exchange</p>
           </div>
         </div>
@@ -75,8 +75,8 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         {/* Mobile header */}
         <div className="lg:hidden flex items-center justify-between px-6 py-5 border-b border-white/8">
           <Link href="/" className="flex items-center gap-2.5">
-            <Image src="/media/logo3.png" alt="Pipnova" width={32} height={32} />
-            <span className="text-lg font-bold text-white">Pipnova</span>
+            <Image src="/media/logo3.png" alt="Northfid" width={32} height={32} />
+            <span className="text-lg font-bold text-white">Northfid</span>
           </Link>
         </div>
 
@@ -86,7 +86,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         </main>
 
         <footer className="py-5 text-center text-xs text-slate-700 border-t border-white/6">
-          Â© {new Date().getFullYear()} Pipnova Group AG Â· Frankfurt Stock Exchange
+          Â© {new Date().getFullYear()} Northfid Group AG Â· Frankfurt Stock Exchange
         </footer>
       </div>
 
