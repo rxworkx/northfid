@@ -72,9 +72,11 @@ async function main() {
   }
 
   // This file is in the repo, so production must never get its default password
-  // or the demo account. Set SEED_ADMIN_EMAIL and SEED_ADMIN_PASSWORD to seed it.
+  // or the demo account. Set SEED_ADMIN_EMAIL and SEED_ADMIN_PASSWORD to seed it,
+  // and optionally SEED_ADMIN_USERNAME for the name to log in with.
   const isProduction = process.env.NODE_ENV === "production";
   const adminEmail = process.env.SEED_ADMIN_EMAIL ?? "admin@example.com";
+  const adminUsername = process.env.SEED_ADMIN_USERNAME ?? "admin";
   const adminPassword = process.env.SEED_ADMIN_PASSWORD ?? "12345678";
   if (isProduction && (!process.env.SEED_ADMIN_EMAIL || !process.env.SEED_ADMIN_PASSWORD || adminPassword.length < 12)) {
     throw new Error("In production, set SEED_ADMIN_EMAIL and a SEED_ADMIN_PASSWORD of at least 12 characters.");
@@ -113,9 +115,9 @@ async function main() {
   const adminPass = await bcrypt.hash(adminPassword, 12);
   await db.user.upsert({
     where: { email: adminEmail },
-    update: { username: "admin", password: adminPass },
+    update: { username: adminUsername, password: adminPass },
     create: {
-      username: "admin",
+      username: adminUsername,
       email: adminEmail,
       password: adminPass,
       firstName: "Admin",
@@ -530,7 +532,7 @@ async function main() {
   }
 
   console.log("Seed complete.");
-  console.log(`Admin login: ${adminEmail}`);
+  console.log(`Admin login: ${adminUsername} or ${adminEmail}`);
   if (!isProduction) console.log("Demo login:  demo@example.com  / 12345678  (username: demo)");
 }
 

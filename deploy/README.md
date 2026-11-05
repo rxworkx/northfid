@@ -69,11 +69,11 @@ Do this once, after this folder has been pushed. Pushes only build until step 7.
     cd /var/www/northfid/current
     read -rs -p 'Admin password (12 or more characters): ' SEED_ADMIN_PASSWORD; echo
     runuser -u northfid -- env HOME=/var/www/northfid/home npm_config_cache=/var/www/northfid/home/.npm \
-      NODE_ENV=production SEED_ADMIN_EMAIL=you@yourdomain.com SEED_ADMIN_PASSWORD="$SEED_ADMIN_PASSWORD" npm run db:seed
+      NODE_ENV=production SEED_ADMIN_USERNAME=YourName SEED_ADMIN_EMAIL=you@yourdomain.com SEED_ADMIN_PASSWORD="$SEED_ADMIN_PASSWORD" npm run db:seed
     unset SEED_ADMIN_PASSWORD
     ```
 
-    Run this once. Running it again resets the admin password to the one you give it.
+    You can then log in with either the username or the email, in the same box. Usernames are case sensitive. Keep the email real, because password reset links go there. Run this once. Running it again resets the admin password to the one you give it.
 
 ## Everyday use
 
